@@ -327,11 +327,11 @@ body {
 .vm-select:focus { border-color: #8b0000; }
 .vm-select option { background: #1a1a1a; }
 
-/* Ocultar flechas de número */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
 input[type=number] { -moz-appearance: textfield; }
 
+/* ── INSTRUCCIONES ── */
 .btn-instrucciones {
   display: block;
   width: 100%;
@@ -340,18 +340,36 @@ input[type=number] { -moz-appearance: textfield; }
   font-family: 'Bebas Neue', sans-serif;
   font-size: 18px;
   letter-spacing: 4px;
-  color: #555;
-  border: 0.5px solid #2a2a2a;
+  color: #e8e8e8;
+  background: #8b0000;
+  border: none;
   border-radius: 2px;
   text-decoration: none;
   margin-bottom: 12px;
-  transition: all 0.2s;
+  transition: background 0.2s;
 }
-.btn-instrucciones:hover { color: #e8e8e8; border-color: #555; }
+.btn-instrucciones:hover { background: #a30000; }
 
-.instrucciones-page .instr-text { color: #e8e8e8; }
-.instrucciones-page .label { color: #ffcccc; }
-.instrucciones-page .bloodline { background: #e8e8e8; }
-.instrucciones-page .instr-paso { color: #fff; }
-.instrucciones-page .instr-rol { color: #fff; }
-.instrucciones-page .subtitulo { color: #ffcccc; }
+.instr-text {
+  font-size: 14px;
+  color: #888;
+  line-height: 1.8;
+  margin-bottom: 1rem;
+}
+
+.instr-rol {
+  font-size: 15px;
+  color: #e8e8e8;
+  font-weight: 500;
+  margin-bottom: 4px;
+  margin-top: 1rem;
+}
+
+.instr-paso {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 3px;
+  color: #8b0000;
+  margin-bottom: 4px;
+  margin-top: 1rem;
+}
