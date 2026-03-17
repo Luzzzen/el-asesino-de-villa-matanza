@@ -615,8 +615,7 @@ function loadState() {
   const savedPD = localStorage.getItem('vm_playerData');
   const savedState = localStorage.getItem('vm_state');
   if (savedPD) playerData = JSON.parse(savedPD);
-  else { playerData = Array(5).fill(null).map(() => ({ name: '', age: '', gender: '' })); }
-
+  else { playerData = [{ name: '', age: '', gender: '' }]; }
   renderPlayers();
 
   if (savedState) {
