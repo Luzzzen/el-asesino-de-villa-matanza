@@ -348,3 +348,10 @@ input[type=number] { -moz-appearance: textfield; }
   transition: all 0.2s;
 }
 .btn-instrucciones:hover { color: #e8e8e8; border-color: #555; }
+
+.instrucciones-page .instr-text { color: #e8e8e8; }
+.instrucciones-page .label { color: #ffcccc; }
+.instrucciones-page .bloodline { background: #e8e8e8; }
+.instrucciones-page .instr-paso { color: #fff; }
+.instrucciones-page .instr-rol { color: #fff; }
+.instrucciones-page .subtitulo { color: #ffcccc; }
