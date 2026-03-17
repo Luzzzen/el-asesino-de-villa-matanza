@@ -197,3 +197,96 @@ body {
   color: #e8e8e8;
   margin-top: 4px;
 }
+
+/* ── PICKER LIST ── */
+.picker-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 1.5rem 0;
+}
+
+.picker-btn {
+  width: 100%;
+  background: #1a1a1a;
+  border: 0.5px solid #2a2a2a;
+  color: #e8e8e8;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-family: 'DM Sans', sans-serif;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+  letter-spacing: 1px;
+}
+
+.picker-btn:hover { border-color: #8b0000; color: #fff; }
+.picker-btn.selected { border-color: #8b0000; background: #1f0000; color: #fff; }
+
+/* ── TIMER ── */
+.timer-wrap {
+  margin: 2rem 0 1.5rem;
+  position: relative;
+}
+
+.timer-bar-bg {
+  height: 3px;
+  background: #1a1a1a;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.timer-bar {
+  height: 3px;
+  background: #8b0000;
+  border-radius: 2px;
+  width: 100%;
+  transition: width 1s linear;
+}
+
+.timer-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  color: #8b0000;
+  letter-spacing: 4px;
+}
+
+/* ── ALIVE LIST ── */
+.alive-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 1rem 0 2rem;
+}
+
+.alive-chip {
+  background: #1a1a1a;
+  border: 0.5px solid #2a2a2a;
+  color: #888;
+  padding: 6px 12px;
+  font-size: 12px;
+  letter-spacing: 1px;
+  border-radius: 2px;
+}
+
+/* ── GAMEOVER ── */
+.gameover-roles {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 1.5rem;
+}
+
+.gameover-role-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 8px 0;
+  border-bottom: 0.5px solid #1e1e1e;
+  color: #888;
+}
+
+.gameover-role-row span:first-child { color: #e8e8e8; }
+.gameover-role-row .villain-tag { color: #8b0000; }
