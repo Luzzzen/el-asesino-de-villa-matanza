@@ -24,6 +24,7 @@ let state = {
   testigoActive: null,
   guardianActive: null,
   mediumActive: null,
+  pistasUsadas: [],
 };
 
 // playerData: [{ name, age, gender }]
