@@ -1,1 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>El Asesino de Villa Matanza</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
 
+  <!-- PANTALLA: Setup -->
+  <div id="screen-setup" class="screen active">
+    <div class="container">
+      <h1 class="titulo">El Asesino<br>de Villa<br>Matanza</h1>
+      <p class="subtitulo">Uno de ustedes no es inocente</p>
+      <div class="bloodline"></div>
+
+      <p class="label">Jugadores</p>
+      <div id="playerList" class="player-list"></div>
+      <button class="btn-agregar" id="addBtn" onclick="addPlayer()">+ Agregar jugador</button>
+
+      <div class="counter">
+        <span>Total: <span id="count" class="accent">0</span> jugadores</span>
+        <span>Mín. 5 — Máx. 10</span>
+      </div>
+
+      <button class="btn-primary" id="startBtn" onclick="goToRoles()" disabled>COMENZAR</button>
+      <p class="warning" id="warning">Necesitás al menos 5 jugadores.</p>
+    </div>
+  </div>
+
+  <!-- PANTALLA: Asignación de roles -->
+  <div id="screen-roles" class="screen">
+    <div class="container">
+      <p class="label">Pasale el teléfono a</p>
+      <h2 class="nombre-jugador" id="rolePlayerName"></h2>
+      <div class="bloodline"></div>
+      <p class="instruccion">Mirá tu rol en privado.<br>No se lo muestres a nadie.</p>
+      <button class="btn-primary" onclick="revealRole()">VER MI ROL</button>
+    </div>
+  </div>
+
+  <!-- PANTALLA: Ver rol -->
+  <div id="screen-reveal" class="screen">
+    <div class="container">
+      <p class="label">Tu rol esta ronda</p>
+      <h2 class="rol-nombre" id="revealRoleName"></h2>
+      <div class="bloodline"></div>
+      <p class="rol-desc" id="revealRoleDesc"></p>
+      <div id="villainExtra" class="villain-extra" style="display:none">
+        <p class="label" style="margin-top:1.5rem">Tu cómplice</p>
+        <p class="complice-nombre" id="compliceNombre"></p>
+      </div>
+      <button class="btn-primary" style="margin-top:2rem" onclick="nextRolePlayer()">ENTENDIDO</button>
+    </div>
+  </div>
+
+  <script src="js/roles.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
