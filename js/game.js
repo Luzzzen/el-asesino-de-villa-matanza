@@ -321,29 +321,66 @@ function revealNightAction() {
 
 function generarPista() {
   const villains = state.assignments.filter(a => a.role === 'asesino' || a.role === 'secuaz');
-  const target = villains[Math.floor(Math.random() * villains.length)];
-  const pd = playerData.find(p => p.name.trim() === target.name);
-
-  const pistas = [];
-  if (pd) {
-    if (pd.gender) pistas.push(`Uno de los villanos es de género ${pd.gender === 'M' ? 'masculino' : pd.gender === 'F' ? 'femenino' : 'no binario'}.`);
-    if (pd.age) pistas.push(`Uno de los villanos tiene ${pd.age} años.`);
-  }
-  // Pista por nombre
-  const nombre = target.name;
-  const tipoPista = Math.floor(Math.random() * 3);
-  if (tipoPista === 0) pistas.push(`El nombre de uno de los villanos tiene ${nombre.length} letras.`);
-  else if (tipoPista === 1) pistas.push(`El nombre de uno de los villanos empieza con "${nombre[0].toUpperCase()}".`);
-  else pistas.push(`El nombre de uno de los villanos termina con "${nombre[nombre.length - 1].toUpperCase()}".`);
-
-  // Pista de negación
   const inocentes = state.assignments.filter(a => a.role !== 'asesino' && a.role !== 'secuaz');
-  if (inocentes.length > 0) {
-    const inocente = inocentes[Math.floor(Math.random() * inocentes.length)];
-    pistas.push(`${inocente.name} no es el Asesino.`);
+  const consonantes = 'bcdfghjklmnñpqrstvwxyz';
+
+  if (!state.pistasUsadas) state.pistasUsadas = [];
+
+  const candidatas = [];
+
+  // 1. Edad exacta
+  villains.forEach(v => {
+    const pd = playerData.find(p => p.name.trim() === v.name);
+    if (pd && pd.age) {
+      const pista = `Uno de los villanos tiene ${pd.age} años.`;
+      if (!state.pistasUsadas.includes(pista)) candidatas.push(pista);
+    }
+  });
+
+  // 2. Negación de inocente
+  inocentes.forEach(v => {
+    const pista = `${v.name} no es el Asesino.`;
+    if (!state.pistasUsadas.includes(pista)) candidatas.push(pista);
+  });
+
+  // 3. Género de un villano
+  villains.forEach(v => {
+    const pd = playerData.find(p => p.name.trim() === v.name);
+    if (pd && pd.gender) {
+      const genText = pd.gender === 'M' ? 'masculino' : pd.gender === 'F' ? 'femenino' : 'no binario';
+      const pista = `Uno de los villanos es de género ${genText}.`;
+      if (!state.pistasUsadas.includes(pista)) candidatas.push(pista);
+    }
+  });
+
+  // 4. Consonante en el nombre
+  villains.forEach(v => {
+    const nombre = v.name.toLowerCase();
+    const consonantesEnNombre = [...new Set(nombre.split('').filter(c => consonantes.includes(c)))];
+    consonantesEnNombre.forEach(c => {
+      const pista = `El nombre de uno de los villanos contiene la letra "${c.toUpperCase()}".`;
+      if (!state.pistasUsadas.includes(pista)) candidatas.push(pista);
+    });
+  });
+
+  // 5. Relación de género entre los dos villanos
+  if (villains.length === 2) {
+    const pd0 = playerData.find(p => p.name.trim() === villains[0].name);
+    const pd1 = playerData.find(p => p.name.trim() === villains[1].name);
+    if (pd0 && pd1 && pd0.gender && pd1.gender) {
+      const pista = pd0.gender === pd1.gender
+        ? 'Los dos villanos son del mismo género.'
+        : 'Los dos villanos son de géneros distintos.';
+      if (!state.pistasUsadas.includes(pista)) candidatas.push(pista);
+    }
   }
 
-  return pistas[Math.floor(Math.random() * pistas.length)];
+  if (candidatas.length === 0) return 'No quedan pistas disponibles. Confiá en tu intuición.';
+
+  const elegida = candidatas[Math.floor(Math.random() * candidatas.length)];
+  state.pistasUsadas.push(elegida);
+  saveState();
+  return elegida;
 }
 
 function showNightPicker(options, onSelect) {
