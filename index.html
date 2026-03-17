@@ -9,28 +9,25 @@
 </head>
 <body>
 
-  <!-- PANTALLA: Setup -->
+  <!-- SETUP -->
   <div id="screen-setup" class="screen active">
     <div class="container">
       <h1 class="titulo">El Asesino<br>de Villa<br>Matanza</h1>
       <p class="subtitulo">Uno de ustedes no es inocente</p>
       <div class="bloodline"></div>
-
       <p class="label">Jugadores</p>
       <div id="playerList" class="player-list"></div>
       <button class="btn-agregar" id="addBtn" onclick="addPlayer()">+ Agregar jugador</button>
-
       <div class="counter">
         <span>Total: <span id="count" class="accent">0</span> jugadores</span>
         <span>Mín. 5 — Máx. 10</span>
       </div>
-
       <button class="btn-primary" id="startBtn" onclick="goToRoles()" disabled>COMENZAR</button>
       <p class="warning" id="warning">Necesitás al menos 5 jugadores.</p>
     </div>
   </div>
 
-  <!-- PANTALLA: Asignación de roles -->
+  <!-- ASIGNACIÓN: pasar teléfono -->
   <div id="screen-roles" class="screen">
     <div class="container">
       <p class="label">Pasale el teléfono a</p>
@@ -41,7 +38,7 @@
     </div>
   </div>
 
-  <!-- PANTALLA: Ver rol -->
+  <!-- ASIGNACIÓN: ver rol -->
   <div id="screen-reveal" class="screen">
     <div class="container">
       <p class="label">Tu rol esta ronda</p>
@@ -53,6 +50,103 @@
         <p class="complice-nombre" id="compliceNombre"></p>
       </div>
       <button class="btn-primary" style="margin-top:2rem" onclick="nextRolePlayer()">ENTENDIDO</button>
+    </div>
+  </div>
+
+  <!-- NOCHE: pasar teléfono -->
+  <div id="screen-night-pass" class="screen">
+    <div class="container">
+      <p class="label">Noche — Ronda <span id="nightRoundNum"></span></p>
+      <h2 class="nombre-jugador" id="nightPlayerName"></h2>
+      <div class="bloodline"></div>
+      <p class="instruccion">Villa Matanza duerme.<br>No muestres tu pantalla.</p>
+      <button class="btn-primary" onclick="revealNightAction()">VER MI ACCIÓN</button>
+    </div>
+  </div>
+
+  <!-- NOCHE: acción -->
+  <div id="screen-night-action" class="screen">
+    <div class="container">
+      <p class="label" id="nightActionLabel"></p>
+      <h2 class="rol-nombre" id="nightActionTitle"></h2>
+      <div class="bloodline"></div>
+      <p class="rol-desc" id="nightActionDesc"></p>
+
+      <!-- Lista de jugadores (asesino / guardián / secuaz-sugerencia) -->
+      <div id="nightPlayerPicker" style="display:none">
+        <div id="nightPickerList" class="picker-list"></div>
+      </div>
+
+      <!-- Timer -->
+      <div class="timer-wrap" id="timerWrap">
+        <div class="timer-bar" id="timerBar"></div>
+        <p class="timer-text" id="timerText">10</p>
+      </div>
+
+      <button class="btn-primary" id="nightContinueBtn" style="display:none" onclick="nextNightPlayer()">CONTINUAR</button>
+    </div>
+  </div>
+
+  <!-- DÍA: anuncio de víctima -->
+  <div id="screen-day-announce" class="screen">
+    <div class="container">
+      <p class="label">Amaneció en Villa Matanza</p>
+      <div class="bloodline"></div>
+      <div id="announceContent"></div>
+      <button class="btn-primary" style="margin-top:2rem" onclick="startDebate()">INICIAR DEBATE</button>
+    </div>
+  </div>
+
+  <!-- DÍA: debate -->
+  <div id="screen-debate" class="screen">
+    <div class="container">
+      <p class="label">Ronda <span id="debateRoundNum"></span> — Debate</p>
+      <h2 class="nombre-jugador" style="font-size:32px; margin-bottom:0.5rem">Discutan entre ustedes</h2>
+      <div class="bloodline"></div>
+      <p class="instruccion">Cuando estén listos,<br>inicien la votación.</p>
+      <div id="debateAlivePlayers" class="alive-list"></div>
+      <button class="btn-primary" onclick="startVoting()">INICIAR VOTACIÓN</button>
+    </div>
+  </div>
+
+  <!-- VOTACIÓN: pasar teléfono -->
+  <div id="screen-vote-pass" class="screen">
+    <div class="container">
+      <p class="label">Votación — Ronda <span id="voteRoundNum"></span></p>
+      <h2 class="nombre-jugador" id="votePlayerName"></h2>
+      <div class="bloodline"></div>
+      <p class="instruccion">Votá en privado.<br>No muestres tu pantalla.</p>
+      <button class="btn-primary" onclick="revealVote()">VOTAR</button>
+    </div>
+  </div>
+
+  <!-- VOTACIÓN: emitir voto -->
+  <div id="screen-vote-action" class="screen">
+    <div class="container">
+      <p class="label" id="voteActionLabel">¿A quién eliminás?</p>
+      <div class="bloodline"></div>
+      <div id="votePickerList" class="picker-list"></div>
+    </div>
+  </div>
+
+  <!-- RESULTADO DE VOTACIÓN -->
+  <div id="screen-vote-result" class="screen">
+    <div class="container">
+      <p class="label">El pueblo decidió</p>
+      <div class="bloodline"></div>
+      <div id="voteResultContent"></div>
+      <button class="btn-primary" style="margin-top:2rem" id="voteResultBtn" onclick="afterVoteResult()"></button>
+    </div>
+  </div>
+
+  <!-- FIN DE PARTIDA -->
+  <div id="screen-gameover" class="screen">
+    <div class="container">
+      <h1 class="titulo" id="gameoverTitle"></h1>
+      <div class="bloodline"></div>
+      <p class="rol-desc" id="gameoverDesc"></p>
+      <div id="gameoverRoles" class="gameover-roles"></div>
+      <button class="btn-primary" style="margin-top:2rem" onclick="resetGame()">NUEVA PARTIDA</button>
     </div>
   </div>
 
