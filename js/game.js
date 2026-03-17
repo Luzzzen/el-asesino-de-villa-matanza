@@ -604,7 +604,7 @@ function resetGame() {
   state = { players:[], alive:[], dead:[], assignments:[], round:0, phase:'setup', currentRoleIndex:0,
     nightOrder:[], nightIndex:0, nightVictim:null, nightProtected:null, secuazSuggestion:null, asinoPicked:false,
     voteOrder:[], voteIndex:0, votes:{}, mediumPlayer:null, mediumUsed:false,
-    cobardeActive:null, testigoActive:null, guardianActive:null, mediumActive:null };
+    cobardeActive:null, testigoActive:null, guardianActive:null, mediumActive:null, pistasUsadas:[] };
   renderPlayers();
   showScreen('screen-setup');
 }
