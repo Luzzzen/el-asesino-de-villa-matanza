@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Instrucciones — El Asesino de Villa Matanza</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+
+    <h1 class="titulo" style="font-size: 38px;">Instrucciones</h1>
+    <p class="subtitulo">El Asesino de Villa Matanza</p>
+    <div class="bloodline"></div>
+
+    <p class="label">Objetivo</p>
+    <p class="instr-text">Los sobrevivientes deben descubrir y eliminar al Asesino antes de que sea demasiado tarde. El Asesino y su Secuaz ganan si logran reducir al grupo hasta quedar en igualdad numérica.</p>
+
+    <div class="bloodline"></div>
+
+    <p class="label">Roles villanos</p>
+
+    <p class="instr-rol">🔪 El Asesino</p>
+    <p class="instr-text">Cada noche elige en secreto a quién eliminar. Conoce a su Secuaz. Si es descubierto y eliminado, los villanos pierden.</p>
+
+    <p class="instr-rol">😈 El Secuaz</p>
+    <p class="instr-text">Conoce al Asesino y gana con él, pero no mata. Puede dejar una sugerencia de víctima antes de que el Asesino actúe, o saber a quién eligió si ya actuó. Su rol es encubrirlo desde adentro.</p>
+
+    <div class="bloodline"></div>
+
+    <p class="label">Roles de sobrevivientes</p>
+
+    <p class="instr-rol">🔦 El Testigo</p>
+    <p class="instr-text">Recibe una pista sobre los villanos al inicio de la noche. Si muere antes de revelarla, la pista se pierde para siempre.</p>
+
+    <p class="instr-rol">🐔 El Cobarde</p>
+    <p class="instr-text">Huyó a tiempo. No puede ser asesinado esta noche, pero tampoco puede votar al día siguiente. Si el Asesino lo elige, nadie muere esa ronda.</p>
+
+    <p class="instr-rol">🛡️ El Guardián</p>
+    <p class="instr-text">Elige a alguien para proteger durante la noche. Si el Asesino elige a esa persona, el Guardián muere en su lugar.</p>
+
+    <p class="instr-rol">🕯️ El Médium</p>
+    <p class="instr-text">Puede invocar el voto de un jugador ya eliminado. Ese voto cuenta en la votación del día. Solo puede usarlo una vez por ronda.</p>
+
+    <p class="instr-rol">🎬 El Extra</p>
+    <p class="instr-text">Sin habilidades esta ronda. Sobrevivir ya es bastante.</p>
+
+    <div class="bloodline"></div>
+
+    <p class="label">Cómo se juega</p>
+
+    <p class="instr-paso">1. NOCHE</p>
+    <p class="instr-text">El teléfono pasa por cada jugador en orden aleatorio. Cada uno toca para ver su acción nocturna y tiene 10 segundos antes de poder continuar. Nadie debe mostrar su pantalla.</p>
+
+    <p class="instr-paso">2. AMANECER</p>
+    <p class="instr-text">Se revela quién fue eliminado durante la noche (si hubo víctima).</p>
+
+    <p class="instr-paso">3. DEBATE</p>
+    <p class="instr-text">El grupo discute libremente. Acusen, defiendan, mientan. Cuando estén listos, inician la votación.</p>
+
+    <p class="instr-paso">4. VOTACIÓN</p>
+    <p class="instr-text">El teléfono pasa por cada jugador vivo en privado. Cada uno vota a quién eliminar. El más votado es eliminado. En caso de empate, nadie muere esa ronda.</p>
+
+    <p class="instr-paso">5. NUEVA RONDA</p>
+    <p class="instr-text">Los roles se redistribuyen entre los sobrevivientes y comienza una nueva noche.</p>
+
+    <div class="bloodline"></div>
+
+    <p class="label">Condiciones de victoria</p>
+    <p class="instr-text" style="margin-bottom: 8px;"><span style="color:#e8e8e8">Sobrevivientes ganan</span> — si votan y eliminan al Asesino.</p>
+    <p class="instr-text"><span style="color:#8b0000">Villanos ganan</span> — cuando los jugadores vivos son igual o menor al número de villanos vivos.</p>
+
+    <div class="bloodline"></div>
+
+    <a href="index.html" class="btn-primary" style="display:block; text-align:center; text-decoration:none; margin-top:1rem;">VOLVER AL JUEGO</a>
+
+  </div>
+</body>
+</html>
