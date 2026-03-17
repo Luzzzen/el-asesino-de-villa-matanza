@@ -170,8 +170,8 @@ function assignRoles(alivePlayers) {
 
   const especiales = ['testigo', 'cobarde', 'guardian', 'medium'];
   let rolesPool = [];
-  especiales.forEach(r => { if (Math.random() < 0.4) rolesPool.push(r); });
-  while (rolesPool.length < sobrevivientes.length) rolesPool.push('extra');
+  const probRoles = { testigo: 0.5, cobarde: 0.5, guardian: 0.5, medium: 0.33 };
+  especiales.forEach(r => { if (Math.random() < probRoles[r]) rolesPool.push(r); });  while (rolesPool.length < sobrevivientes.length) rolesPool.push('extra');
   rolesPool = rolesPool.slice(0, sobrevivientes.length).sort(() => Math.random() - 0.5);
 
   const result = [];
