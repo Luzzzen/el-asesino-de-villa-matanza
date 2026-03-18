@@ -31,39 +31,24 @@ let state = JSON.parse(JSON.stringify(initialState));
 let playerData = [];
 let timerInterval = null;
 
-// Función para inicializar (llamar al final del archivo o aquí)
-function init() {
-    // Si no hay modo elegido, forzamos pantalla de inicio
-    if (!state.mode) {
-        showScreen('screen-mode');
-    } else {
-        // Si ya hay modo, mostramos setup (esto evita el bug del F5)
-        renderPlayers();
-        showScreen('screen-setup');
-    }
-}
-
 // ── PANTALLAS ─────────────────────────────────────────
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => {
       s.classList.remove('active');
-      s.style.display = 'none'; // Aseguramos que no ocupen espacio
+      s.style.display = 'none';
   });
   const activeScreen = document.getElementById(id);
   if (activeScreen) {
       activeScreen.style.display = 'block';
-      // Pequeño timeout para que la animación de CSS (opacity) funcione
       setTimeout(() => activeScreen.classList.add('active'), 10);
   }
   window.scrollTo(0, 0);
 }
 
-// Al final de tu game.js, agregá esta línea para que arranque:
-document.addEventListener('DOMContentLoaded', init);
-
 // ── MODO DE JUEGO ─────────────────────────────────────
 function selectMode(mode) {
   state.mode = mode;
+  state.phase = 'setup';
   playerData = [{ name: '', age: '', gender: '' }];
   saveState();
   renderPlayers();
@@ -73,6 +58,7 @@ function selectMode(mode) {
 // ── SETUP ─────────────────────────────────────────────
 function renderPlayers() {
   const list = document.getElementById('playerList');
+  if (!list) return;
   const count = playerData.length;
   const mode = state.mode;
 
@@ -110,9 +96,11 @@ function renderPlayers() {
     const genderSelect = row.querySelector('[data-field="gender"]');
     const removeBtn = row.querySelector('[data-remove]');
     const minPlayers = mode === 'solo' ? 5 : 7;
-    if (document.activeElement !== nameInput) nameInput.value = playerData[i].name;
-    if (document.activeElement !== ageInput) ageInput.value = playerData[i].age;
-    genderSelect.value = playerData[i].gender;
+    
+    if (document.activeElement !== nameInput) nameInput.value = playerData[i].name || '';
+    if (document.activeElement !== ageInput) ageInput.value = playerData[i].age || '';
+    genderSelect.value = playerData[i].gender || '';
+    
     nameInput.dataset.i = i;
     ageInput.dataset.i = i;
     genderSelect.dataset.i = i;
@@ -131,23 +119,30 @@ function updateCounter() {
   const minPlayers = mode === 'solo' ? 5 : 7;
   const maxPlayers = mode === 'solo' ? 6 : 12;
 
-  const filled = playerData.filter(p => p.name.trim() !== '' && p.age !== '' && p.gender !== '').length;
-  document.getElementById('count').textContent = filled;
-  document.getElementById('addBtn').style.display = playerData.length >= maxPlayers ? 'none' : 'block';
+  const filled = playerData.filter(p => p.name && p.name.trim() !== '' && p.age !== '' && p.gender !== '').length;
+  const countEl = document.getElementById('count');
+  const addBtn = document.getElementById('addBtn');
+  const startBtn = document.getElementById('startBtn');
+  const rangeTextEl = document.getElementById('playerRangeText');
+  const warningEl = document.getElementById('warning');
+
+  if (countEl) countEl.textContent = filled;
+  if (addBtn) addBtn.style.display = playerData.length >= maxPlayers ? 'none' : 'block';
 
   const hasDupes = hasDuplicates();
-  const allFilled = playerData.every(p => p.name.trim() !== '' && p.age !== '' && p.gender !== '');
+  const allFilled = playerData.every(p => p.name && p.name.trim() !== '' && p.age !== '' && p.gender !== '');
   const valid = allFilled && playerData.length >= minPlayers && !hasDupes;
-  document.getElementById('startBtn').disabled = !valid;
+  
+  if (startBtn) startBtn.disabled = !valid;
+  if (rangeTextEl) rangeTextEl.textContent = mode === 'solo' ? 'Mín. 5 — Máx. 6' : 'Mín. 7 — Máx. 12';
 
-  const rangeText = mode === 'solo' ? 'Mín. 5 — Máx. 6' : 'Mín. 7 — Máx. 12';
-  document.getElementById('playerRangeText').textContent = rangeText;
-
-  let warn = '';
-  if (!allFilled) warn = 'Completá nombre, edad y género de cada jugador.';
-  else if (hasDupes) warn = 'Hay nombres repetidos.';
-  else if (playerData.length < minPlayers) warn = `Necesitás al menos ${minPlayers} jugadores.`;
-  document.getElementById('warning').textContent = warn;
+  if (warningEl) {
+    let warn = '';
+    if (!allFilled) warn = 'Completá nombre, edad y género de cada jugador.';
+    else if (hasDupes) warn = 'Hay nombres repetidos.';
+    else if (playerData.length < minPlayers) warn = `Necesitás al menos ${minPlayers} jugadores.`;
+    warningEl.textContent = warn;
+  }
 }
 
 function toggleRolesFalsos() {
@@ -156,7 +151,7 @@ function toggleRolesFalsos() {
 }
 
 function hasDuplicates() {
-  const names = playerData.map(p => p.name.trim().toLowerCase()).filter(p => p !== '');
+  const names = playerData.map(p => (p.name || '').trim().toLowerCase()).filter(p => p !== '');
   return new Set(names).size !== names.length;
 }
 
@@ -176,24 +171,29 @@ function removePlayer(i) {
   }
 }
 
-document.getElementById('playerList').addEventListener('input', e => {
-  const el = e.target;
-  const i = parseInt(el.dataset.i);
-  if (isNaN(i)) return;
-  if (el.dataset.field === 'name') playerData[i].name = el.value;
-  if (el.dataset.field === 'age') playerData[i].age = el.value;
-  updateCounter();
+// Event Listeners para la lista de jugadores
+document.addEventListener('input', e => {
+  if (e.target.dataset.field) {
+    const i = parseInt(e.target.dataset.i);
+    if (isNaN(i)) return;
+    if (e.target.dataset.field === 'name') playerData[i].name = e.target.value;
+    if (e.target.dataset.field === 'age') playerData[i].age = e.target.value;
+    updateCounter();
+    saveState();
+  }
 });
 
-document.getElementById('playerList').addEventListener('change', e => {
-  const el = e.target;
-  const i = parseInt(el.dataset.i);
-  if (isNaN(i)) return;
-  if (el.dataset.field === 'gender') playerData[i].gender = el.value;
-  updateCounter();
+document.addEventListener('change', e => {
+  if (e.target.dataset.field === 'gender') {
+    const i = parseInt(e.target.dataset.i);
+    if (isNaN(i)) return;
+    playerData[i].gender = e.target.value;
+    updateCounter();
+    saveState();
+  }
 });
 
-document.getElementById('playerList').addEventListener('click', e => {
+document.addEventListener('click', e => {
   const btn = e.target.closest('[data-remove]');
   if (btn) removePlayer(parseInt(btn.dataset.remove));
 });
@@ -215,10 +215,7 @@ function assignRoles(alivePlayers) {
     result.push({ name: secuaz, role: 'secuaz', rolFalso: getRolFalso('secuaz'), complice: asesino });
   }
 
-  const especiales = state.round <= 1
-    ? ['testigo', 'cobarde', 'sacrificio']
-    : ['testigo', 'cobarde', 'sacrificio', 'medium'];
-
+  const especiales = state.round <= 1 ? ['testigo', 'cobarde', 'sacrificio'] : ['testigo', 'cobarde', 'sacrificio', 'medium'];
   const probRoles = { testigo: 0.5, cobarde: 0.5, sacrificio: 0.5, medium: 0.33 };
   let rolesPool = [];
   especiales.forEach(r => { if (Math.random() < probRoles[r]) rolesPool.push(r); });
@@ -258,7 +255,8 @@ function trackActiveRoles() {
 
 function showNextRoleScreen() {
   const current = state.assignments[state.currentRoleIndex];
-  document.getElementById('rolePlayerName').textContent = current.name.toUpperCase();
+  const el = document.getElementById('rolePlayerName');
+  if (el) el.textContent = current.name.toUpperCase();
   showScreen('screen-roles');
 }
 
@@ -317,9 +315,7 @@ function revealNightAction() {
 
   if (role === 'asesino') {
     title = 'ELEGÍ TU VÍCTIMA';
-    desc = state.mode === 'complice'
-      ? (state.secuazSuggestion ? `El Secuaz sugiere: ${state.secuazSuggestion}` : 'El Secuaz aún no dejó sugerencia.')
-      : 'Elegí a quién eliminar esta noche.';
+    desc = state.mode === 'complice' ? (state.secuazSuggestion ? `El Secuaz sugiere: ${state.secuazSuggestion}` : 'El Secuaz aún no dejó sugerencia.') : 'Elegí a quién eliminar esta noche.';
     showNightPicker(state.alive.filter(p => p !== name), chosen => {
       state.nightVictim = chosen;
       state.asinoPicked = true;
@@ -332,8 +328,7 @@ function revealNightAction() {
     } else {
       title = 'ROLES ESTA RONDA';
       const otrosRoles = state.assignments.filter(a => a.role !== 'asesino' && a.name !== name);
-      desc = 'Dejá una sugerencia al Asesino si querés.\n\n' +
-        otrosRoles.map(a => `${a.name}: ${ROLES[a.role].nombre}`).join('\n');
+      desc = 'Dejá una sugerencia al Asesino si querés.\n\n' + otrosRoles.map(a => `${a.name}: ${ROLES[a.role].nombre}`).join('\n');
       showNightPicker(state.alive.filter(p => p !== name && p !== assignment.complice), chosen => {
         state.secuazSuggestion = chosen;
         saveState();
@@ -354,9 +349,7 @@ function revealNightAction() {
     });
   } else if (role === 'medium') {
     title = 'EL MÉDIUM';
-    desc = state.dead.length === 0
-      ? 'Todavía no hay muertos. Tu poder no tiene efecto esta ronda.'
-      : 'Mañana podrás invocar el voto de un eliminado. El teléfono te indicará cuándo.';
+    desc = state.dead.length === 0 ? 'Todavía no hay muertos. Tu poder no tiene efecto esta ronda.' : 'Mañana podrás invocar el voto de un eliminado.';
   } else {
     title = 'DESCANSÁS';
     desc = 'Esta noche no tenés acción. Villa Matanza duerme.';
@@ -395,35 +388,6 @@ function generarPista() {
     const pista = `${v.name} no es el Asesino.`;
     if (!state.pistasUsadas.includes(pista)) candidatas.push(pista);
   });
-
-  villains.forEach(v => {
-    const pd = playerData.find(p => p.name.trim() === v.name);
-    if (pd && pd.gender) {
-      const genText = pd.gender === 'M' ? 'masculino' : pd.gender === 'F' ? 'femenino' : 'no binario';
-      const pista = `Uno de los villanos es de género ${genText}.`;
-      if (!state.pistasUsadas.includes(pista)) candidatas.push(pista);
-    }
-  });
-
-  villains.forEach(v => {
-    const nombre = v.name.toLowerCase();
-    const consonantesEnNombre = [...new Set(nombre.split('').filter(c => consonantes.includes(c)))];
-    consonantesEnNombre.forEach(c => {
-      const pista = `El nombre de uno de los villanos contiene la letra "${c.toUpperCase()}".`;
-      if (!state.pistasUsadas.includes(pista)) candidatas.push(pista);
-    });
-  });
-
-  if (villains.length === 2) {
-    const pd0 = playerData.find(p => p.name.trim() === villains[0].name);
-    const pd1 = playerData.find(p => p.name.trim() === villains[1].name);
-    if (pd0 && pd1 && pd0.gender && pd1.gender) {
-      const pista = pd0.gender === pd1.gender
-        ? 'Los dos villanos son del mismo género.'
-        : 'Los dos villanos son de géneros distintos.';
-      if (!state.pistasUsadas.includes(pista)) candidatas.push(pista);
-    }
-  }
 
   if (candidatas.length === 0) return 'No quedan pistas disponibles. Confiá en tu intuición.';
   const elegida = candidatas[Math.floor(Math.random() * candidatas.length)];
@@ -480,15 +444,11 @@ function showDayAnnounce(victim, sacrificioDied) {
   state.phase = 'day';
   const content = document.getElementById('announceContent');
   if (!victim) {
-    content.innerHTML = `<h2 class="nombre-jugador" style="color:#e8e8e8;font-size:28px;margin-bottom:0.5rem">Nadie murió esta noche</h2><p class="rol-desc">Villa Matanza amaneció en paz... por ahora.</p>`;
+    content.innerHTML = `<h2 class="nombre-jugador" style="color:#e8e8e8;font-size:28px;margin-bottom:0.5rem">Nadie murió esta noche</h2><p class="rol-desc">Villa Matanza amaneció en paz.</p>`;
   } else {
-    content.innerHTML = `
-      <p class="rol-desc" style="margin-bottom:0.5rem">${sacrificioDied ? 'El Sacrificio murió protegiendo a alguien.' : 'Durante la noche fue eliminado:'}</p>
-      <h2 class="rol-nombre" style="margin-bottom:0.5rem">${victim.toUpperCase()}</h2>
-      <p class="rol-desc">${getRolPublico(victim)}</p>`;
+    content.innerHTML = `<p class="rol-desc" style="margin-bottom:0.5rem">${sacrificioDied ? 'El Sacrificio murió protegiendo a alguien.' : 'Fue eliminado:'}</p><h2 class="rol-nombre" style="margin-bottom:0.5rem">${victim.toUpperCase()}</h2><p class="rol-desc">${getRolPublico(victim)}</p>`;
   }
-  const gameOver = checkWinCondition();
-  if (gameOver) return;
+  if (checkWinCondition()) return;
   saveState();
   showScreen('screen-day-announce');
 }
@@ -511,11 +471,6 @@ function startVoting() {
   state.votes = {};
   state.alive.forEach(p => state.votes[p] = 0);
   let voters = state.alive.filter(p => p !== state.cobardeActive);
-  state.mediumPlayer = null;
-  if (state.mediumActive && state.alive.includes(state.mediumActive) && state.dead.length > 0 && !state.mediumUsed) {
-    state.mediumPlayer = state.dead[Math.floor(Math.random() * state.dead.length)];
-    state.mediumUsed = true;
-  }
   state.voteOrder = voters.sort(() => Math.random() - 0.5);
   state.voteIndex = 0;
   saveState();
@@ -523,20 +478,15 @@ function startVoting() {
 }
 
 function showVotePass() {
-  const isMediumTurn = state.mediumPlayer && state.voteIndex >= state.voteOrder.length;
-  if (!isMediumTurn && state.voteIndex >= state.voteOrder.length) { resolveVote(); return; }
-  const name = isMediumTurn ? state.mediumPlayer : state.voteOrder[state.voteIndex];
+  if (state.voteIndex >= state.voteOrder.length) { resolveVote(); return; }
+  const name = state.voteOrder[state.voteIndex];
   document.getElementById('votePlayerName').textContent = name.toUpperCase();
   document.getElementById('voteRoundNum').textContent = state.round;
-  const instr = document.querySelector('#screen-vote-pass .instruccion');
-  instr.textContent = isMediumTurn ? 'El Médium invocó tu voto.\nVotá en nombre de los muertos.' : 'Votá en privado.\nNo muestres tu pantalla.';
   showScreen('screen-vote-pass');
 }
 
 function revealVote() {
-  const isMediumTurn = state.mediumPlayer && state.voteIndex >= state.voteOrder.length;
-  const currentVoter = isMediumTurn ? state.mediumPlayer : state.voteOrder[state.voteIndex];
-  document.getElementById('voteActionLabel').textContent = isMediumTurn ? `Voto de ${state.mediumPlayer} (invocado)` : '¿A quién eliminás?';
+  const currentVoter = state.voteOrder[state.voteIndex];
   const list = document.getElementById('votePickerList');
   list.innerHTML = '';
   const options = state.alive.filter(p => p !== currentVoter);
@@ -548,7 +498,6 @@ function revealVote() {
       state.votes[name] = (state.votes[name] || 0) + 1;
       state.voteIndex++;
       saveState();
-      if (isMediumTurn) { resolveVote(); return; }
       showVotePass();
     };
     list.appendChild(btn);
@@ -566,17 +515,13 @@ function resolveVote() {
   const content = document.getElementById('voteResultContent');
   const btn = document.getElementById('voteResultBtn');
 
-  if (tie || !eliminated || maxVotes === 0) {
-    content.innerHTML = `<h2 class="nombre-jugador" style="color:#e8e8e8;font-size:28px;margin-bottom:0.5rem">Empate</h2><p class="rol-desc">El pueblo no se puso de acuerdo. Nadie es eliminado.</p>`;
+  if (tie || !eliminated) {
+    content.innerHTML = `<h2 class="nombre-jugador" style="color:#e8e8e8;font-size:28px;margin-bottom:0.5rem">Empate</h2><p class="rol-desc">Nadie fue eliminado.</p>`;
   } else {
     state.alive = state.alive.filter(p => p !== eliminated);
     state.dead.push(eliminated);
-    content.innerHTML = `
-      <p class="rol-desc" style="margin-bottom:0.5rem">El pueblo eligió:</p>
-      <h2 class="rol-nombre" style="margin-bottom:0.5rem">${eliminated.toUpperCase()}</h2>
-      <p class="rol-desc">${getRolPublico(eliminated)}</p>`;
-    const gameOver = checkWinConditionSilent();
-    if (gameOver) { showGameOver(gameOver); return; }
+    content.innerHTML = `<p class="rol-desc">El pueblo eligió a:</p><h2 class="rol-nombre">${eliminated.toUpperCase()}</h2><p class="rol-desc">${getRolPublico(eliminated)}</p>`;
+    if (checkWinCondition()) return;
   }
 
   btn.textContent = 'SIGUIENTE RONDA';
@@ -586,123 +531,84 @@ function resolveVote() {
 
 function afterVoteResult() {
   state.round++;
-  reassignRoles();
+  state.assignments = assignRoles(state.alive);
+  trackActiveRoles();
   startNight();
 }
 
-function reassignRoles() {
-  state.assignments = assignRoles(state.alive);
-  state.mediumUsed = false;
-  trackActiveRoles();
-}
-
-// ── CONDICIÓN DE VICTORIA ─────────────────────────────
+// ── CONDICIONES Y GAMEOVER ────────────────────────────
 function checkWinCondition() {
-  const result = checkWinConditionSilent();
-  if (result) { showGameOver(result); return true; }
-  return false;
-}
-
-function checkWinConditionSilent() {
-  const aliveVillains = state.assignments.filter(a =>
-    (a.role === 'asesino' || a.role === 'secuaz') && state.alive.includes(a.name));
+  const villains = state.assignments.filter(a => (a.role === 'asesino' || a.role === 'secuaz') && state.alive.includes(a.name));
   const asesinoDead = !state.assignments.find(a => a.role === 'asesino' && state.alive.includes(a.name));
-  if (asesinoDead) return 'survivors';
-  const survivors = state.alive.filter(p => !aliveVillains.find(v => v.name === p));
-  if (aliveVillains.length >= survivors.length) return 'villains';
-  return null;
+  
+  if (asesinoDead) { showGameOver('survivors'); return true; }
+  if (villains.length >= (state.alive.length - villains.length)) { showGameOver('villains'); return true; }
+  return false;
 }
 
 function showGameOver(result) {
   state.phase = 'gameover';
-  saveState();
   const title = document.getElementById('gameoverTitle');
   const desc = document.getElementById('gameoverDesc');
-  if (result === 'survivors') {
-    title.textContent = 'VILLA MATANZA FUE SALVADA';
-    title.style.color = '#e8e8e8';
-    desc.textContent = 'El asesino fue descubierto. La pesadilla terminó.';
-  } else {
-    title.textContent = 'EL ASESINO GANÓ';
-    title.style.color = '#8b0000';
-    desc.textContent = 'Villa Matanza cayó en la oscuridad.';
-  }
-  document.getElementById('gameoverRoles').innerHTML = state.assignments.map(a => {
-    const isVillain = a.role === 'asesino' || a.role === 'secuaz';
-    return `<div class="gameover-role-row"><span>${a.name}</span><span class="${isVillain ? 'villain-tag' : ''}">${ROLES[a.role].nombre}</span></div>`;
-  }).join('');
+  title.textContent = result === 'survivors' ? 'VILLA MATANZA SALVADA' : 'EL ASESINO GANÓ';
+  title.style.color = result === 'survivors' ? '#e8e8e8' : '#8b0000';
+  document.getElementById('gameoverRoles').innerHTML = state.assignments.map(a => `<div class="gameover-role-row"><span>${a.name}</span><span>${ROLES[a.role].nombre}</span></div>`).join('');
   showScreen('screen-gameover');
+  saveState();
 }
 
 // ── TIMER ─────────────────────────────────────────────
 function startTimer(seconds, onComplete) {
   clearTimer();
   let remaining = seconds;
-  const wrap = document.getElementById('timerWrap');
-  wrap.innerHTML = `<div class="timer-bar-bg"><div class="timer-bar" id="timerBar" style="width:100%"></div></div><p class="timer-text" id="timerText">${remaining}</p>`;
+  const bar = document.getElementById('timerBar');
+  const text = document.getElementById('timerText');
   timerInterval = setInterval(() => {
     remaining--;
-    const b = document.getElementById('timerBar');
-    const t = document.getElementById('timerText');
-    if (b) b.style.width = `${(remaining / seconds) * 100}%`;
-    if (t) t.textContent = remaining;
+    if (bar) bar.style.width = `${(remaining / seconds) * 100}%`;
+    if (text) text.textContent = remaining;
     if (remaining <= 0) { clearTimer(); onComplete(); }
   }, 1000);
 }
 
-function clearTimer() {
-  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-}
+function clearTimer() { clearInterval(timerInterval); }
 
-// ── PERSISTENCIA ──────────────────────────────────────
+// ── PERSISTENCIA Y REINICIO ───────────────────────────
 function saveState() {
   localStorage.setItem('vm_state', JSON.stringify(state));
   localStorage.setItem('vm_playerData', JSON.stringify(playerData));
 }
 
-function loadState() {
-  if (new URLSearchParams(window.location.search).get('from') === 'instrucciones') {
-    history.replaceState(null, '', window.location.pathname);
-    return;
-  }
+function resetGame() {
+  localStorage.clear();
+  state = JSON.parse(JSON.stringify(initialState));
+  playerData = [{ name: '', age: '', gender: '' }];
+  showScreen('screen-mode');
+}
 
-  const savedPD = localStorage.getItem('vm_playerData');
+// ── INICIO UNIFICADO ──────────────────────────────────
+function init() {
   const savedState = localStorage.getItem('vm_state');
-  if (savedPD) playerData = JSON.parse(savedPD);
-  else playerData = [{ name: '', age: '', gender: '' }];
+  const savedPD = localStorage.getItem('vm_playerData');
 
+  if (savedPD) playerData = JSON.parse(savedPD);
+  
   if (savedState) {
     state = JSON.parse(savedState);
-    switch (state.phase) {
-      case 'setup': showScreen('screen-mode'); break;
-      case 'setup': showScreen('screen-mode'); break;
-      case 'roles': renderPlayers(); showNextRoleScreen(); break;
-      case 'night': renderPlayers(); showNightPass(); break;
-      case 'day': renderPlayers(); showScreen('screen-debate'); break;
-      case 'vote': renderPlayers(); showVotePass(); break;
-      case 'gameover': showScreen('screen-gameover'); break;
-      default: showScreen('screen-mode');
+    if (state.mode) {
+      // Si ya hay un juego en curso, restauramos la pantalla según la fase
+      if (state.phase === 'setup') { renderPlayers(); showScreen('screen-setup'); }
+      else if (state.phase === 'roles') showNextRoleScreen();
+      else if (state.phase === 'night') showNightPass();
+      else if (state.phase === 'day') showScreen('screen-debate');
+      else if (state.phase === 'gameover') showScreen('screen-gameover');
+      else showScreen('screen-mode');
+    } else {
+      showScreen('screen-mode');
     }
-    return;
+  } else {
+    showScreen('screen-mode');
   }
-
-  showScreen('screen-mode');
 }
 
-function resetGame() {
-  localStorage.removeItem('vm_state');
-  localStorage.removeItem('vm_playerData');
-  playerData = [{ name: '', age: '', gender: '' }];
-  state = {
-    mode: null, rolesFalsos: false, players: [], alive: [], dead: [], assignments: [],
-    round: 0, phase: 'setup', currentRoleIndex: 0,
-    nightOrder: [], nightIndex: 0, nightVictim: null, nightProtected: null,
-    secuazSuggestion: null, asinoPicked: false,
-    voteOrder: [], voteIndex: 0, votes: {}, mediumPlayer: null, mediumUsed: false,
-    cobardeActive: null, testigoActive: null, sacrificioActive: null, mediumActive: null, pistasUsadas: []
-  };
-  showScreen('screen-mode');
-}
-
-// ── INICIO ────────────────────────────────────────────
-loadState();
+document.addEventListener('DOMContentLoaded', init);
