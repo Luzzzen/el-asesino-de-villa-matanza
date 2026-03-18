@@ -1,5 +1,6 @@
 // ── ESTADO ────────────────────────────────────────────
 let state = {
+  mode: null,
   players: [],
   alive: [],
   dead: [],
@@ -27,7 +28,6 @@ let state = {
   pistasUsadas: [],
 };
 
-// playerData: [{ name, age, gender }]
 let playerData = [];
 let timerInterval = null;
 
@@ -38,17 +38,22 @@ function showScreen(id) {
   window.scrollTo(0, 0);
 }
 
-// ── SETUP ─────────────────────────────────────────────
-function initPlayerData(n) {
-  while (playerData.length < n) playerData.push({ name: '', age: '', gender: '' });
-  while (playerData.length > n) playerData.pop();
+// ── MODO DE JUEGO ─────────────────────────────────────
+function selectMode(mode) {
+  state.mode = mode;
+  playerData = [{ name: '', age: '', gender: '' }];
+  saveState();
+  renderPlayers();
+  showScreen('screen-setup');
 }
 
+// ── SETUP ─────────────────────────────────────────────
 function renderPlayers() {
   const list = document.getElementById('playerList');
   const count = playerData.length;
+  const mode = state.mode;
+  const maxPlayers = 12;
 
-  // Crear filas que falten
   while (list.children.length < count) {
     const i = list.children.length;
     const row = document.createElement('div');
@@ -73,48 +78,50 @@ function renderPlayers() {
     list.appendChild(row);
   }
 
-  // Eliminar filas sobrantes
   while (list.children.length > count) list.removeChild(list.lastChild);
 
-  // Actualizar números y valores sin perder foco
   Array.from(list.children).forEach((row, i) => {
     row.querySelector('.player-num').textContent = String(i + 1).padStart(2, '0');
     row.dataset.index = i;
-
     const nameInput = row.querySelector('[data-field="name"]');
     const ageInput = row.querySelector('[data-field="age"]');
     const genderSelect = row.querySelector('[data-field="gender"]');
     const removeBtn = row.querySelector('[data-remove]');
-
-    // Solo actualizar si no tiene foco
+    const minPlayers = mode === 'solo' ? 5 : 7;
     if (document.activeElement !== nameInput) nameInput.value = playerData[i].name;
     if (document.activeElement !== ageInput) ageInput.value = playerData[i].age;
     genderSelect.value = playerData[i].gender;
-
     nameInput.dataset.i = i;
     ageInput.dataset.i = i;
     genderSelect.dataset.i = i;
     removeBtn.dataset.remove = i;
-    removeBtn.style.display = count > 5 ? 'block' : 'none';
+    removeBtn.style.display = count > minPlayers ? 'block' : 'none';
   });
 
   updateCounter();
 }
 
 function updateCounter() {
+  const mode = state.mode;
+  const minPlayers = mode === 'solo' ? 5 : 7;
+  const maxPlayers = mode === 'solo' ? 6 : 12;
+
   const filled = playerData.filter(p => p.name.trim() !== '' && p.age !== '' && p.gender !== '').length;
   document.getElementById('count').textContent = filled;
-  document.getElementById('addBtn').style.display = playerData.length >= 12 ? 'none' : 'block';
+  document.getElementById('addBtn').style.display = playerData.length >= maxPlayers ? 'none' : 'block';
 
   const hasDupes = hasDuplicates();
   const allFilled = playerData.every(p => p.name.trim() !== '' && p.age !== '' && p.gender !== '');
-  const valid = allFilled && playerData.length >= 5 && !hasDupes;
+  const valid = allFilled && playerData.length >= minPlayers && !hasDupes;
   document.getElementById('startBtn').disabled = !valid;
+
+  const rangeText = mode === 'solo' ? 'Mín. 5 — Máx. 6' : 'Mín. 7 — Máx. 12';
+  document.getElementById('playerRangeText').textContent = rangeText;
 
   let warn = '';
   if (!allFilled) warn = 'Completá nombre, edad y género de cada jugador.';
   else if (hasDupes) warn = 'Hay nombres repetidos.';
-  else if (playerData.length < 5) warn = 'Necesitás al menos 5 jugadores.';
+  else if (playerData.length < minPlayers) warn = `Necesitás al menos ${minPlayers} jugadores.`;
   document.getElementById('warning').textContent = warn;
 }
 
@@ -124,27 +131,27 @@ function hasDuplicates() {
 }
 
 function addPlayer() {
-  if (playerData.length < 12) {
+  const maxPlayers = state.mode === 'solo' ? 6 : 12;
+  if (playerData.length < maxPlayers) {
     playerData.push({ name: '', age: '', gender: '' });
     renderPlayers();
   }
 }
 
 function removePlayer(i) {
-  if (playerData.length > 5) {
+  const minPlayers = state.mode === 'solo' ? 5 : 7;
+  if (playerData.length > minPlayers) {
     playerData.splice(i, 1);
     renderPlayers();
   }
 }
 
-// Delegación de eventos para los inputs
 document.getElementById('playerList').addEventListener('input', e => {
   const el = e.target;
   const i = parseInt(el.dataset.i);
   if (isNaN(i)) return;
   if (el.dataset.field === 'name') playerData[i].name = el.value;
   if (el.dataset.field === 'age') playerData[i].age = el.value;
-  if (el.dataset.field === 'gender') playerData[i].gender = el.value;
   updateCounter();
 });
 
@@ -165,18 +172,30 @@ document.getElementById('playerList').addEventListener('click', e => {
 function assignRoles(alivePlayers) {
   const shuffled = [...alivePlayers].sort(() => Math.random() - 0.5);
   const asesino = shuffled[0];
-  const secuaz = shuffled[1];
-  const sobrevivientes = shuffled.slice(2);
+  const result = [];
 
-  const especiales = ['testigo', 'cobarde', 'guardian', 'medium'];
-  let rolesPool = [];
+  let sobrevivientes;
+  if (state.mode === 'solo') {
+    sobrevivientes = shuffled.slice(1);
+    result.push({ name: asesino, role: 'asesino', rolFalso: getRolFalso('asesino'), complice: null });
+  } else {
+    const secuaz = shuffled[1];
+    sobrevivientes = shuffled.slice(2);
+    result.push({ name: asesino, role: 'asesino', rolFalso: getRolFalso('asesino'), complice: secuaz });
+    result.push({ name: secuaz, role: 'secuaz', rolFalso: getRolFalso('secuaz'), complice: asesino });
+  }
+
+  // Médium no disponible en ronda 1
+  const especiales = state.round <= 1
+    ? ['testigo', 'cobarde', 'guardian']
+    : ['testigo', 'cobarde', 'guardian', 'medium'];
+
   const probRoles = { testigo: 0.5, cobarde: 0.5, guardian: 0.5, medium: 0.33 };
-  especiales.forEach(r => { if (Math.random() < probRoles[r]) rolesPool.push(r); });  while (rolesPool.length < sobrevivientes.length) rolesPool.push('extra');
+  let rolesPool = [];
+  especiales.forEach(r => { if (Math.random() < probRoles[r]) rolesPool.push(r); });
+  while (rolesPool.length < sobrevivientes.length) rolesPool.push('extra');
   rolesPool = rolesPool.slice(0, sobrevivientes.length).sort(() => Math.random() - 0.5);
 
-  const result = [];
-  result.push({ name: asesino, role: 'asesino', rolFalso: getRolFalso('asesino'), complice: secuaz });
-  result.push({ name: secuaz, role: 'secuaz', rolFalso: getRolFalso('secuaz'), complice: asesino });
   sobrevivientes.forEach((name, i) => result.push({ name, role: rolesPool[i] }));
   return result.sort(() => Math.random() - 0.5);
 }
@@ -220,7 +239,7 @@ function revealRole() {
   document.getElementById('revealRoleName').textContent = rol.nombre.toUpperCase();
   document.getElementById('revealRoleDesc').textContent = rol.desc;
   const ve = document.getElementById('villainExtra');
-  if (rol.villano) {
+  if (rol.villano && current.complice) {
     ve.style.display = 'block';
     document.getElementById('compliceNombre').textContent = current.complice.toUpperCase();
   } else {
@@ -232,10 +251,7 @@ function revealRole() {
 function nextRolePlayer() {
   state.currentRoleIndex++;
   saveState();
-  if (state.currentRoleIndex >= state.assignments.length) {
-    startNight();
-    return;
-  }
+  if (state.currentRoleIndex >= state.assignments.length) { startNight(); return; }
   showNextRoleScreen();
 }
 
@@ -272,7 +288,9 @@ function revealNightAction() {
 
   if (role === 'asesino') {
     title = 'ELEGÍ TU VÍCTIMA';
-    desc = state.secuazSuggestion ? `El Secuaz sugiere: ${state.secuazSuggestion}` : 'El Secuaz aún no dejó sugerencia.';
+    desc = state.mode === 'complice'
+      ? (state.secuazSuggestion ? `El Secuaz sugiere: ${state.secuazSuggestion}` : 'El Secuaz aún no dejó sugerencia.')
+      : 'Elegí a quién eliminar esta noche.';
     showNightPicker(state.alive.filter(p => p !== name), chosen => {
       state.nightVictim = chosen;
       state.asinoPicked = true;
@@ -292,13 +310,13 @@ function revealNightAction() {
     }
   } else if (role === 'cobarde') {
     title = 'HUISTE';
-    desc = 'Esta noche estás a salvo. No podés ser asesinado, pero tampoco podrás votar mañana.';
+    desc = 'Esta noche estás a salvo. Si el Asesino te elige, nadie muere. Tampoco podés votar mañana.';
   } else if (role === 'testigo') {
     title = 'EL TESTIGO';
     desc = generarPista();
   } else if (role === 'guardian') {
     title = 'ELEGÍ A QUIÉN PROTEGER';
-    desc = 'Si el Asesino lo elige, morís vos en su lugar.';
+    desc = 'Si el Asesino elige a esa persona esta noche, morís vos en su lugar.';
     showNightPicker(state.alive.filter(p => p !== name), chosen => {
       state.nightProtected = chosen;
       saveState();
@@ -323,12 +341,9 @@ function generarPista() {
   const villains = state.assignments.filter(a => a.role === 'asesino' || a.role === 'secuaz');
   const inocentes = state.assignments.filter(a => a.role !== 'asesino' && a.role !== 'secuaz');
   const consonantes = 'bcdfghjklmnñpqrstvwxyz';
-
   if (!state.pistasUsadas) state.pistasUsadas = [];
-
   const candidatas = [];
 
-  // 1. Edad exacta
   villains.forEach(v => {
     const pd = playerData.find(p => p.name.trim() === v.name);
     if (pd && pd.age) {
@@ -337,13 +352,11 @@ function generarPista() {
     }
   });
 
-  // 2. Negación de inocente
   inocentes.forEach(v => {
     const pista = `${v.name} no es el Asesino.`;
     if (!state.pistasUsadas.includes(pista)) candidatas.push(pista);
   });
 
-  // 3. Género de un villano
   villains.forEach(v => {
     const pd = playerData.find(p => p.name.trim() === v.name);
     if (pd && pd.gender) {
@@ -353,7 +366,6 @@ function generarPista() {
     }
   });
 
-  // 4. Consonante en el nombre
   villains.forEach(v => {
     const nombre = v.name.toLowerCase();
     const consonantesEnNombre = [...new Set(nombre.split('').filter(c => consonantes.includes(c)))];
@@ -363,7 +375,6 @@ function generarPista() {
     });
   });
 
-  // 5. Relación de género entre los dos villanos
   if (villains.length === 2) {
     const pd0 = playerData.find(p => p.name.trim() === villains[0].name);
     const pd1 = playerData.find(p => p.name.trim() === villains[1].name);
@@ -376,7 +387,6 @@ function generarPista() {
   }
 
   if (candidatas.length === 0) return 'No quedan pistas disponibles. Confiá en tu intuición.';
-
   const elegida = candidatas[Math.floor(Math.random() * candidatas.length)];
   state.pistasUsadas.push(elegida);
   saveState();
@@ -615,34 +625,36 @@ function loadState() {
   const savedPD = localStorage.getItem('vm_playerData');
   const savedState = localStorage.getItem('vm_state');
   if (savedPD) playerData = JSON.parse(savedPD);
-  else { playerData = [{ name: '', age: '', gender: '' }]; }
-  renderPlayers();
+  else playerData = [{ name: '', age: '', gender: '' }];
 
   if (savedState) {
     state = JSON.parse(savedState);
+    renderPlayers();
     switch (state.phase) {
       case 'roles': showNextRoleScreen(); break;
       case 'night': showNightPass(); break;
       case 'day': showScreen('screen-debate'); break;
       case 'vote': showVotePass(); break;
       case 'gameover': showScreen('screen-gameover'); break;
-      default: showScreen('screen-setup');
+      default: showScreen('screen-mode');
     }
     return;
   }
-  showScreen('screen-setup');
+
+  showScreen('screen-mode');
 }
 
 function resetGame() {
   localStorage.removeItem('vm_state');
   localStorage.removeItem('vm_playerData');
-  playerData = Array(5).fill(null).map(() => ({ name: '', age: '', gender: '' }));
-  state = { players:[], alive:[], dead:[], assignments:[], round:0, phase:'setup', currentRoleIndex:0,
-    nightOrder:[], nightIndex:0, nightVictim:null, nightProtected:null, secuazSuggestion:null, asinoPicked:false,
-    voteOrder:[], voteIndex:0, votes:{}, mediumPlayer:null, mediumUsed:false,
-    cobardeActive:null, testigoActive:null, guardianActive:null, mediumActive:null, pistasUsadas:[] };
-  renderPlayers();
-  showScreen('screen-setup');
+  playerData = [{ name: '', age: '', gender: '' }];
+  state = {
+    mode: null, players: [], alive: [], dead: [], assignments: [], round: 0, phase: 'setup', currentRoleIndex: 0,
+    nightOrder: [], nightIndex: 0, nightVictim: null, nightProtected: null, secuazSuggestion: null, asinoPicked: false,
+    voteOrder: [], voteIndex: 0, votes: {}, mediumPlayer: null, mediumUsed: false,
+    cobardeActive: null, testigoActive: null, guardianActive: null, mediumActive: null, pistasUsadas: []
+  };
+  showScreen('screen-mode');
 }
 
 // ── INICIO ────────────────────────────────────────────
