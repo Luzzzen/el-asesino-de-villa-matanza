@@ -475,12 +475,12 @@ input[type=number] { -moz-appearance: textfield; }
 
   /* ── FOOTER ── */
 .footer-brand {
-  margin-top: 3rem;
-  font-size: 11px;
+  margin-top: 2rem;
+  font-size: 10px;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: #2a2a2a;
-  text-align: center;
+  color: #1e1e1e;
+  text-align: right;
 }
   color: #888;
   letter-spacing: 0.5px;
