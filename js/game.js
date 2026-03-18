@@ -591,22 +591,33 @@ function init() {
   const savedState = localStorage.getItem('vm_state');
   const savedPD = localStorage.getItem('vm_playerData');
 
-  if (savedPD) playerData = JSON.parse(savedPD);
+  if (savedPD) {
+    playerData = JSON.parse(savedPD);
+  } else {
+    playerData = [{ name: '', age: '', gender: '' }];
+  }
   
   if (savedState) {
     state = JSON.parse(savedState);
-    if (state.mode) {
-      // Si ya hay un juego en curso, restauramos la pantalla según la fase
-      if (state.phase === 'setup') { renderPlayers(); showScreen('screen-setup'); }
+    
+    // Si la fase es 'setup' pero no hay modo, o si el modo es null,
+    // forzamos el regreso a la pantalla principal.
+    if (!state.mode || state.mode === null) {
+      showScreen('screen-mode');
+    } else {
+      // Si hay un juego en curso real (fase avanzada o setup con modo), restauramos
+      if (state.phase === 'setup') { 
+        renderPlayers(); 
+        showScreen('screen-setup'); 
+      }
       else if (state.phase === 'roles') showNextRoleScreen();
       else if (state.phase === 'night') showNightPass();
-      else if (state.phase === 'day') showScreen('screen-debate');
+      else if (state.phase === 'day') showScreen('screen-day-announce');
       else if (state.phase === 'gameover') showScreen('screen-gameover');
       else showScreen('screen-mode');
-    } else {
-      showScreen('screen-mode');
     }
   } else {
+    // Si no hay nada guardado, pantalla de inicio limpia
     showScreen('screen-mode');
   }
 }
