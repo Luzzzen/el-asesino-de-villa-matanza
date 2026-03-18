@@ -23,7 +23,7 @@ let state = {
   mediumUsed: false,
   cobardeActive: null,
   testigoActive: null,
-  guardianActive: null,
+  sacrificioActive: null,
   mediumActive: null,
   pistasUsadas: [],
 };
@@ -52,7 +52,6 @@ function renderPlayers() {
   const list = document.getElementById('playerList');
   const count = playerData.length;
   const mode = state.mode;
-  const maxPlayers = 12;
 
   while (list.children.length < count) {
     const i = list.children.length;
@@ -185,12 +184,11 @@ function assignRoles(alivePlayers) {
     result.push({ name: secuaz, role: 'secuaz', rolFalso: getRolFalso('secuaz'), complice: asesino });
   }
 
-  // Médium no disponible en ronda 1
   const especiales = state.round <= 1
-    ? ['testigo', 'cobarde', 'guardian']
-    : ['testigo', 'cobarde', 'guardian', 'medium'];
+    ? ['testigo', 'cobarde', 'sacrificio']
+    : ['testigo', 'cobarde', 'sacrificio', 'medium'];
 
-  const probRoles = { testigo: 0.5, cobarde: 0.5, guardian: 0.5, medium: 0.33 };
+  const probRoles = { testigo: 0.5, cobarde: 0.5, sacrificio: 0.5, medium: 0.33 };
   let rolesPool = [];
   especiales.forEach(r => { if (Math.random() < probRoles[r]) rolesPool.push(r); });
   while (rolesPool.length < sobrevivientes.length) rolesPool.push('extra');
@@ -217,12 +215,12 @@ function goToRoles() {
 function trackActiveRoles() {
   state.cobardeActive = null;
   state.testigoActive = null;
-  state.guardianActive = null;
+  state.sacrificioActive = null;
   state.mediumActive = null;
   state.assignments.forEach(a => {
     if (a.role === 'cobarde') state.cobardeActive = a.name;
     if (a.role === 'testigo') state.testigoActive = a.name;
-    if (a.role === 'guardian') state.guardianActive = a.name;
+    if (a.role === 'sacrificio') state.sacrificioActive = a.name;
     if (a.role === 'medium') state.mediumActive = a.name;
   });
 }
@@ -301,8 +299,11 @@ function revealNightAction() {
       title = 'EL ASESINO ACTUÓ';
       desc = state.nightVictim ? `Esta noche eligió a: ${state.nightVictim}` : 'El Asesino aún no eligió.';
     } else {
-      title = 'DEJÁ UNA SUGERENCIA';
-      desc = 'El Asesino verá tu elección.';
+      title = 'ROLES ESTA RONDA';
+      // Mostrar roles de todos excepto el asesino (ya lo sabe) y el propio secuaz
+      const otrosRoles = state.assignments.filter(a => a.role !== 'asesino' && a.name !== name);
+      desc = 'Dejá una sugerencia al Asesino si querés.\n\n' +
+        otrosRoles.map(a => `${a.name}: ${ROLES[a.role].nombre}`).join('\n');
       showNightPicker(state.alive.filter(p => p !== name && p !== assignment.complice), chosen => {
         state.secuazSuggestion = chosen;
         saveState();
@@ -314,7 +315,7 @@ function revealNightAction() {
   } else if (role === 'testigo') {
     title = 'EL TESTIGO';
     desc = generarPista();
-  } else if (role === 'guardian') {
+  } else if (role === 'sacrificio') {
     title = 'ELEGÍ A QUIÉN PROTEGER';
     desc = 'Si el Asesino elige a esa persona esta noche, morís vos en su lugar.';
     showNightPicker(state.alive.filter(p => p !== name), chosen => {
@@ -421,11 +422,11 @@ function nextNightPlayer() {
 
 function resolveNight() {
   let victim = state.nightVictim;
-  let guardianDied = false;
+  let sacrificioDied = false;
 
   if (victim && state.nightProtected === victim) {
-    const guardian = state.assignments.find(a => a.role === 'guardian' && state.alive.includes(a.name));
-    if (guardian) { victim = guardian.name; guardianDied = true; }
+    const sacrificio = state.assignments.find(a => a.role === 'sacrificio' && state.alive.includes(a.name));
+    if (sacrificio) { victim = sacrificio.name; sacrificioDied = true; }
   }
 
   if (victim && victim === state.cobardeActive) victim = null;
@@ -433,18 +434,18 @@ function resolveNight() {
   state.nightVictim = victim;
   if (victim) { state.alive = state.alive.filter(p => p !== victim); state.dead.push(victim); }
   saveState();
-  showDayAnnounce(victim, guardianDied);
+  showDayAnnounce(victim, sacrificioDied);
 }
 
 // ── DÍA ───────────────────────────────────────────────
-function showDayAnnounce(victim, guardianDied) {
+function showDayAnnounce(victim, sacrificioDied) {
   state.phase = 'day';
   const content = document.getElementById('announceContent');
   if (!victim) {
     content.innerHTML = `<h2 class="nombre-jugador" style="color:#e8e8e8;font-size:28px;margin-bottom:0.5rem">Nadie murió esta noche</h2><p class="rol-desc">Villa Matanza amaneció en paz... por ahora.</p>`;
   } else {
     content.innerHTML = `
-      <p class="rol-desc" style="margin-bottom:0.5rem">${guardianDied ? 'El Guardián murió protegiendo a alguien.' : 'Esta noche fue eliminado:'}</p>
+      <p class="rol-desc" style="margin-bottom:0.5rem">${sacrificioDied ? 'El Sacrificio murió protegiendo a alguien.' : 'Durante la noche fue eliminado:'}</p>
       <h2 class="rol-nombre" style="margin-bottom:0.5rem">${victim.toUpperCase()}</h2>
       <p class="rol-desc">${getRolPublico(victim)}</p>`;
   }
@@ -652,7 +653,7 @@ function resetGame() {
     mode: null, players: [], alive: [], dead: [], assignments: [], round: 0, phase: 'setup', currentRoleIndex: 0,
     nightOrder: [], nightIndex: 0, nightVictim: null, nightProtected: null, secuazSuggestion: null, asinoPicked: false,
     voteOrder: [], voteIndex: 0, votes: {}, mediumPlayer: null, mediumUsed: false,
-    cobardeActive: null, testigoActive: null, guardianActive: null, mediumActive: null, pistasUsadas: []
+    cobardeActive: null, testigoActive: null, sacrificioActive: null, mediumActive: null, pistasUsadas: []
   };
   showScreen('screen-mode');
 }
