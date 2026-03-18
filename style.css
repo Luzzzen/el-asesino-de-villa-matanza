@@ -18,7 +18,6 @@ body {
   padding: 2rem 1.5rem 3rem;
 }
 
-/* Tipografía */
 .titulo {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 56px;
@@ -59,7 +58,7 @@ body {
 
 .accent { color: #8b0000; }
 
-/* Jugadores */
+/* ── JUGADORES ── */
 .player-list {
   display: flex;
   flex-direction: column;
@@ -137,7 +136,7 @@ body {
   letter-spacing: 1px;
 }
 
-/* Botón principal */
+/* ── BOTÓN PRINCIPAL ── */
 .btn-primary {
   width: 100%;
   background: #8b0000;
@@ -163,7 +162,7 @@ body {
   min-height: 16px;
 }
 
-/* Pantalla de rol */
+/* ── PANTALLA DE ROL ── */
 .nombre-jugador {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 42px;
@@ -348,6 +347,7 @@ input[type=number] { -moz-appearance: textfield; }
   margin-bottom: 12px;
   transition: background 0.2s;
 }
+
 .btn-instrucciones:hover { background: #a30000; }
 
 .instr-text {
@@ -369,9 +369,19 @@ input[type=number] { -moz-appearance: textfield; }
   font-family: 'Bebas Neue', sans-serif;
   font-size: 16px;
   letter-spacing: 3px;
+  color: #8b0000;
+  margin-bottom: 4px;
+  margin-top: 1rem;
+}
 
-  /* ── MODO DE JUEGO ── */
-.mode-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 1rem; }
+/* ── MODO DE JUEGO ── */
+.mode-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 1rem;
+}
+
 .mode-btn {
   width: 100%;
   background: #1a1a1a;
@@ -386,7 +396,9 @@ input[type=number] { -moz-appearance: textfield; }
   transition: all 0.2s;
   text-align: left;
 }
+
 .mode-btn:hover { border-color: #8b0000; background: #1f0000; }
+
 .mode-name {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 28px;
@@ -394,14 +406,11 @@ input[type=number] { -moz-appearance: textfield; }
   color: #e8e8e8;
   display: block;
 }
+
 .mode-players {
   font-size: 11px;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: #555;
   display: block;
-}
-  color: #8b0000;
-  margin-bottom: 4px;
-  margin-top: 1rem;
 }
