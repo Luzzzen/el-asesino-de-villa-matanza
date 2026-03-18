@@ -62,56 +62,46 @@ function renderPlayers() {
   const count = playerData.length;
   const mode = state.mode;
 
-  while (list.children.length < count) {
-    const i = list.children.length;
+  list.innerHTML = ''; // Limpiamos para asegurar alineación fresca
+
+  playerData.forEach((player, i) => {
+    const minPlayers = mode === 'solo' ? 5 : 7;
     const row = document.createElement('div');
     row.className = 'player-row';
-    row.dataset.index = i;
     row.innerHTML = `
-      <span class="player-num">${String(i + 1).padStart(2, '0')}</span>
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span class="player-num">JUGADOR ${String(i + 1).padStart(2, '0')}</span>
+        ${count > minPlayers ? `<button class="btn-remove" onclick="removePlayer(${i})">✕</button>` : ''}
+      </div>
       <div class="player-fields">
-        <input class="vm-input" type="text" placeholder="Nombre..." maxlength="20" data-field="name" data-i="${i}" />
+        <input class="vm-input" type="text" placeholder="Nombre..." maxlength="20" 
+               value="${player.name || ''}" oninput="updatePlayerData(${i}, 'name', this.value)" />
         <div class="player-sub">
-          <input class="vm-input vm-input-sm" type="number" placeholder="Edad" min="1" max="99" data-field="age" data-i="${i}" />
-          <select class="vm-select" data-field="gender" data-i="${i}">
+          <input class="vm-input" type="number" placeholder="Edad" style="flex:1"
+                 value="${player.age || ''}" oninput="updatePlayerData(${i}, 'age', this.value)" />
+          <select class="vm-select" style="flex:1" onchange="updatePlayerData(${i}, 'gender', this.value)">
             <option value="">Género</option>
-            <option value="M">M</option>
-            <option value="F">F</option>
-            <option value="X">X</option>
+            <option value="M" ${player.gender === 'M' ? 'selected' : ''}>M</option>
+            <option value="F" ${player.gender === 'F' ? 'selected' : ''}>F</option>
+            <option value="X" ${player.gender === 'X' ? 'selected' : ''}>X</option>
           </select>
-          <button class="btn-remove" data-remove="${i}">✕</button>
         </div>
       </div>
     `;
     list.appendChild(row);
-  }
-
-  while (list.children.length > count) list.removeChild(list.lastChild);
-
-  Array.from(list.children).forEach((row, i) => {
-    row.querySelector('.player-num').textContent = String(i + 1).padStart(2, '0');
-    row.dataset.index = i;
-    const nameInput = row.querySelector('[data-field="name"]');
-    const ageInput = row.querySelector('[data-field="age"]');
-    const genderSelect = row.querySelector('[data-field="gender"]');
-    const removeBtn = row.querySelector('[data-remove]');
-    const minPlayers = mode === 'solo' ? 5 : 7;
-    
-    if (document.activeElement !== nameInput) nameInput.value = playerData[i].name || '';
-    if (document.activeElement !== ageInput) ageInput.value = playerData[i].age || '';
-    genderSelect.value = playerData[i].gender || '';
-    
-    nameInput.dataset.i = i;
-    ageInput.dataset.i = i;
-    genderSelect.dataset.i = i;
-    removeBtn.dataset.remove = i;
-    removeBtn.style.display = count > minPlayers ? 'block' : 'none';
   });
 
   const toggle = document.getElementById('toggleRolesFalsos');
   if (toggle) toggle.checked = state.rolesFalsos;
 
   updateCounter();
+}
+
+// Nueva función auxiliar para que el JS no se pierda con los inputs
+function updatePlayerData(index, field, value) {
+    playerData[index][field] = value;
+    updateCounter();
+    saveState();
 }
 
 function updateCounter() {
