@@ -40,24 +40,32 @@
       <h1 class="titulo" onclick="resetGame()" style="cursor:pointer;">El Asesino<br>de Villa<br>Matanza</h1>
       <p class="subtitulo">Uno de ustedes no es inocente</p>
       <div class="bloodline"></div>
+      
       <p class="label">Jugadores</p>
       <div id="playerList" class="player-list"></div>
+      
       <button class="btn-agregar" id="addBtn" onclick="addPlayer()">+ Agregar jugador</button>
+      
       <div class="counter">
-        <span>Total: <span id="count" class="accent">0</span> jugadores</span>
-        <span id="playerRangeText">Mín. 5 — Máx. 12</span>
+        <span>TOTAL: <span id="count">0</span> JUGADORES</span>
+        <br>
+        <small id="playerRangeText" style="font-size: 10px; opacity: 0.5;">Mín. 5 — Máx. 12</small>
       </div>
+
       <div class="toggle-row">
-  <span class="toggle-label">Roles falsos para villanos</span>
-  <label class="toggle-switch">
-    <input type="checkbox" id="toggleRolesFalsos" onchange="toggleRolesFalsos()" />
-    <span class="toggle-slider"></span>
-  </label>
-</div>
+        <span class="toggle-label">ROLES FALSOS PARA VILLANOS</span>
+        <label class="switch">
+          <input type="checkbox" id="toggleRolesFalsos" onchange="toggleRolesFalsos()">
+          <span class="slider"></span>
+        </label>
+      </div>
+
       <button class="btn-primary" id="startBtn" onclick="goToRoles()" disabled>COMENZAR</button>
-      <p class="warning" id="warning">Necesitás al menos 5 jugadores.</p>
+      <p class="warning" id="warning" style="font-size: 11px; color: #8b0000; text-align: center; margin-top: 10px;"></p>
+      
+      <p class="footer-brand">By Luzzzen</p>
     </div>
-  </div>
+</div>
 
   <!-- ASIGNACIÓN: pasar teléfono -->
   <div id="screen-roles" class="screen">
