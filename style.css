@@ -1,531 +1,220 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap');
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── VARIABLES Y BASE ── */
+:root {
+    --rojo-sangre: #8b0000;
+    --rojo-hover: #a30000;
+    --negro-fondo: #0d0d0d;
+    --gris-oscuro: #1a1a1a;
+    --gris-borde: #2a2a2a;
+    --texto-principal: #e8e8e8;
+    --texto-secundario: #888;
+    --texto-mute: #444;
+}
+
+*, *::before, *::after { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    -webkit-tap-highlight-color: transparent; /* Optimización Mobile */
+}
 
 body {
-  background: #0d0d0d;
-  color: #e8e8e8;
-  font-family: 'DM Sans', sans-serif;
-  min-height: 100vh;
-}
-
-/* ── TRANSICIONES DE PANTALLA ── */
-.screen {
-  display: none;
-  opacity: 0;
-}
-
-.screen.active {
-  display: block;
-  animation: fadeIn 0.4s ease forwards;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ── ANIMACIÓN DE ROL ── */
-.rol-nombre {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 48px;
-  letter-spacing: 4px;
-  color: #8b0000;
-  animation: revealRol 0.6s ease forwards;
-}
-
-@keyframes revealRol {
-  from { opacity: 0; letter-spacing: 12px; }
-  to   { opacity: 1; letter-spacing: 4px; }
+    background: var(--negro-fondo);
+    color: var(--texto-principal);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
 .container {
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem 3rem;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 3rem;
 }
 
+/* ── PANTALLAS Y TRANSICIONES ── */
+.screen {
+    display: none;
+    opacity: 0;
+}
+
+.screen.active {
+    display: block;
+    animation: fadeIn 0.4s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── TIPOGRAFÍA Y BRANDING ── */
 .titulo {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 56px;
-  letter-spacing: 6px;
-  color: #8b0000;
-  line-height: 1;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 56px;
+    letter-spacing: 6px;
+    color: var(--rojo-sangre);
+    line-height: 1;
+    position: relative;
+    animation: titleDrip 1s ease forwards;
 }
 
 .subtitulo {
-  font-size: 11px;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  color: #444;
-  margin: 6px 0 1.5rem;
-}
-
-.label {
-  font-size: 11px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: #555;
-  margin-bottom: 10px;
-}
-
-.instruccion {
-  font-size: 15px;
-  color: #888;
-  line-height: 1.8;
-  margin-bottom: 2rem;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--texto-mute);
+    margin: 6px 0 1.5rem;
 }
 
 .bloodline {
-  width: 40px;
-  height: 2px;
-  background: #8b0000;
-  margin: 1rem 0 1.5rem;
+    width: 40px;
+    height: 2px;
+    background: var(--rojo-sangre);
+    margin: 1rem 0 1.5rem;
 }
 
-.accent { color: #8b0000; }
-
-/* ── ANIMACIONES PANTALLA PRINCIPAL ── */
-#screen-mode .bloodline {
-  width: 0;
-  animation: drawLine 0.8s ease forwards 0.3s;
-}
-
-@keyframes drawLine {
-  to { width: 40px; }
-}
-
-#screen-mode .subtitulo {
-  animation: flicker 3s ease 1.2s both;
-}
-
-@keyframes flicker {
-  0%   { opacity: 0; }
-  10%  { opacity: 0.8; }
-  12%  { opacity: 0; }
-  20%  { opacity: 0.9; }
-  22%  { opacity: 0.2; }
-  30%  { opacity: 1; }
-  70%  { opacity: 1; }
-  72%  { opacity: 0.3; }
-  74%  { opacity: 1; }
-  100% { opacity: 1; }
-}
-
-#screen-mode .titulo {
-  position: relative;
-  animation: titleDrip 1s ease forwards;
-}
+.accent { color: var(--rojo-sangre); }
 
 @keyframes titleDrip {
-  from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── JUGADORES ── */
-.player-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 1rem;
+/* ── MODO DE JUEGO (Botones Principales) ── */
+.mode-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin: 2rem 0;
 }
 
-.player-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.mode-btn {
+    width: 100%;
+    background: var(--gris-oscuro);
+    border: 1px solid var(--gris-borde);
+    color: var(--texto-principal);
+    padding: 28px 20px; /* Tamaño ideal para pulgares */
+    cursor: pointer;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+    transition: all 0.2s ease;
+    outline: none;
 }
 
-.player-num {
-  font-size: 11px;
-  color: #8b0000;
-  width: 20px;
-  flex-shrink: 0;
-  letter-spacing: 1px;
+/* Feedback táctil para celular */
+.mode-btn:active {
+    background: #250000;
+    border-color: var(--rojo-sangre);
+    transform: scale(0.97);
 }
 
-.vm-input {
-  flex: 1;
-  background: #1a1a1a;
-  border: 0.5px solid #2a2a2a;
-  color: #e8e8e8;
-  padding: 10px 14px;
-  font-size: 14px;
-  font-family: 'DM Sans', sans-serif;
-  outline: none;
-  border-radius: 2px;
-  transition: border-color 0.2s;
+.mode-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 2px;
+    color: #fff;
+    text-transform: uppercase;
 }
 
-.vm-input:focus { border-color: #8b0000; }
-.vm-input::placeholder { color: #333; }
-
-.btn-remove {
-  background: none;
-  border: none;
-  color: #333;
-  cursor: pointer;
-  font-size: 16px;
-  padding: 4px 6px;
-  line-height: 1;
-  transition: color 0.2s;
+.mode-players {
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--texto-secundario);
+    text-transform: uppercase;
 }
 
-.btn-remove:hover { color: #8b0000; }
-
-.btn-agregar {
-  width: 100%;
-  background: none;
-  border: 0.5px solid #2a2a2a;
-  color: #555;
-  padding: 10px;
-  font-size: 11px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
-  border-radius: 2px;
-  transition: all 0.2s;
-  margin-bottom: 1.5rem;
-}
-
-.btn-agregar:hover { border-color: #555; color: #e8e8e8; }
-
-.counter {
-  display: flex;
-  justify-content: space-between;
-  font-size: 11px;
-  color: #444;
-  margin-bottom: 1.5rem;
-  letter-spacing: 1px;
-}
-
-/* ── BOTÓN PRINCIPAL ── */
+/* ── BOTONES Y INPUTS ── */
 .btn-primary {
-  width: 100%;
-  background: #8b0000;
-  border: none;
-  color: #e8e8e8;
-  padding: 16px;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 22px;
-  letter-spacing: 4px;
-  cursor: pointer;
-  border-radius: 2px;
-  transition: background 0.2s;
+    width: 100%;
+    background: var(--rojo-sangre);
+    border: none;
+    color: var(--texto-principal);
+    padding: 18px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 4px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.2s;
 }
 
-.btn-primary:hover { background: #a30000; }
-.btn-primary:disabled { background: #1a1a1a; color: #333; cursor: not-allowed; }
+.btn-primary:active { background: var(--rojo-hover); transform: scale(0.98); }
+.btn-primary:disabled { background: var(--gris-oscuro); color: var(--texto-mute); cursor: not-allowed; }
 
-.warning {
-  font-size: 11px;
-  color: #8b0000;
-  letter-spacing: 1px;
-  margin-top: 10px;
-  min-height: 16px;
+.vm-input, .vm-select {
+    background: var(--gris-oscuro);
+    border: 1px solid var(--gris-borde);
+    color: var(--texto-principal);
+    padding: 12px 14px;
+    font-size: 16px; /* Evita zoom automático en iOS */
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    border-radius: 4px;
+    transition: border-color 0.2s;
 }
 
-/* ── PANTALLA DE ROL ── */
-.nombre-jugador {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 42px;
-  letter-spacing: 4px;
-  color: #e8e8e8;
+.vm-input:focus { border-color: var(--rojo-sangre); }
+
+/* ── JUGADORES (Lista y Fila) ── */
+.player-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 1.5rem; }
+.player-row { display: flex; align-items: flex-start; gap: 10px; }
+.player-num { font-size: 12px; color: var(--rojo-sangre); width: 20px; padding-top: 12px; }
+
+.player-fields { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.player-sub { display: flex; gap: 8px; }
+
+/* ── ELEMENTOS DE JUEGO (Roles, Timer, etc) ── */
+.rol-nombre {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    letter-spacing: 4px;
+    color: var(--rojo-sangre);
+    animation: revealRol 0.6s ease forwards;
 }
 
-.rol-desc {
-  font-size: 15px;
-  color: #888;
-  line-height: 1.8;
-}
-
-.villain-extra {
-  border-left: 2px solid #8b0000;
-  padding-left: 1rem;
-  margin-top: 1.5rem;
-}
-
-.complice-nombre {
-  font-size: 20px;
-  font-family: 'Bebas Neue', sans-serif;
-  letter-spacing: 3px;
-  color: #e8e8e8;
-  margin-top: 4px;
-}
-
-/* ── PICKER LIST ── */
-.picker-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin: 1.5rem 0;
-}
-
-.picker-btn {
-  width: 100%;
-  background: #1a1a1a;
-  border: 0.5px solid #2a2a2a;
-  color: #e8e8e8;
-  padding: 12px 16px;
-  font-size: 15px;
-  font-family: 'DM Sans', sans-serif;
-  text-align: left;
-  cursor: pointer;
-  border-radius: 2px;
-  transition: all 0.2s;
-  letter-spacing: 1px;
-}
-
-.picker-btn:hover { border-color: #8b0000; color: #fff; }
-.picker-btn.selected { border-color: #8b0000; background: #1f0000; color: #fff; }
-
-/* ── TIMER ── */
-.timer-wrap {
-  margin: 2rem 0 1.5rem;
-  position: relative;
-}
-
-.timer-bar-bg {
-  height: 3px;
-  background: #1a1a1a;
-  border-radius: 2px;
-  overflow: hidden;
-  margin-bottom: 8px;
-}
-
-.timer-bar {
-  height: 3px;
-  background: #8b0000;
-  border-radius: 2px;
-  width: 100%;
-  transition: width 1s linear;
+@keyframes revealRol {
+    from { opacity: 0; letter-spacing: 12px; }
+    to   { opacity: 1; letter-spacing: 4px; }
 }
 
 .timer-text {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 32px;
-  color: #8b0000;
-  letter-spacing: 4px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    color: var(--rojo-sangre);
+    text-align: center;
 }
 
-/* ── ALIVE LIST ── */
-.alive-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 1rem 0 2rem;
+/* ── FOOTER Y BRANDING GLOBAL ── */
+.footer-brand {
+    margin-top: auto;
+    padding: 3rem 0 1rem;
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--texto-mute);
+    text-align: center;
+    width: 100%;
 }
 
-.alive-chip {
-  background: #1a1a1a;
-  border: 0.5px solid #2a2a2a;
-  color: #888;
-  padding: 6px 12px;
-  font-size: 12px;
-  letter-spacing: 1px;
-  border-radius: 2px;
+/* ── AJUSTES PARA PC (Escritorio) ── */
+@media (min-width: 768px) {
+    .mode-btn:hover {
+        border-color: var(--rojo-sangre);
+        background: #1f1f1f;
+        transform: translateY(-2px);
+    }
+    
+    .btn-primary:hover { background: var(--rojo-hover); }
+    
+    .vm-input, .vm-select { font-size: 14px; }
 }
 
-/* ── GAMEOVER ── */
-.gameover-roles {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 1.5rem;
-}
-
-.gameover-role-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-  padding: 8px 0;
-  border-bottom: 0.5px solid #1e1e1e;
-  color: #888;
-}
-
-.gameover-role-row span:first-child { color: #e8e8e8; }
-.gameover-role-row .villain-tag { color: #8b0000; }
-
-/* ── CAMPOS DE JUGADOR ── */
-.player-fields {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.player-sub {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-
-.vm-input-sm {
-  width: 70px;
-  flex: none;
-}
-
-.vm-select {
-  flex: 1;
-  background: #1a1a1a;
-  border: 0.5px solid #2a2a2a;
-  color: #e8e8e8;
-  padding: 10px 10px;
-  font-size: 14px;
-  font-family: 'DM Sans', sans-serif;
-  outline: none;
-  border-radius: 2px;
-  transition: border-color 0.2s;
-  appearance: none;
-}
-
-.vm-select:focus { border-color: #8b0000; }
-.vm-select option { background: #1a1a1a; }
-
+/* Limpieza de inputs number */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
 input[type=number] { -moz-appearance: textfield; }
-
-/* ── INSTRUCCIONES ── */
-.btn-instrucciones {
-  display: block;
-  width: 100%;
-  text-align: center;
-  padding: 12px;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 18px;
-  letter-spacing: 4px;
-  color: #e8e8e8;
-  background: #8b0000;
-  border: none;
-  border-radius: 2px;
-  text-decoration: none;
-  margin-bottom: 12px;
-  transition: background 0.2s;
-}
-
-.btn-instrucciones:hover { background: #a30000; }
-
-.instr-text {
-  font-size: 14px;
-  color: #888;
-  line-height: 1.8;
-  margin-bottom: 1rem;
-}
-
-.instr-rol {
-  font-size: 15px;
-  color: #e8e8e8;
-  font-weight: 500;
-  margin-bottom: 4px;
-  margin-top: 1rem;
-}
-
-.instr-paso {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 16px;
-  letter-spacing: 3px;
-  color: #8b0000;
-  margin-bottom: 4px;
-  margin-top: 1rem;
-}
-
-/* ── MODO DE JUEGO ── */
-#screen-mode .container {
-  display: flex;
-  flex-direction: column;
-  min-height: 90vh; /* Asegura espacio para el footer */
-}
-
-.mode-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 16px; /* Un poco más de aire */
-  margin: 1.5rem 0;
-}
-
-#screen-mode .mode-btn {
-  width: 100%;
-  background: #1a1a1a !important; /* Forzamos el color para que no se herede de instrucciones */
-  border: 1px solid #2a2a2a;
-  color: #e8e8e8;
-  padding: 24px 20px;
-  cursor: pointer;
-  border-radius: 4px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  transition: all 0.3s ease;
-  text-align: left;
-}
-
-#screen-mode .mode-btn:hover { 
-  border-color: #8b0000; 
-  background: #252525 !important; 
-  transform: translateY(-2px);
-}
-
-/* ── FOOTER Y BRANDING ── */
-.footer-brand {
-  margin-top: auto; /* Empuja el "By Luzzzen" al fondo */
-  padding-top: 3rem;
-  font-size: 10px;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  color: #333; /* Un gris un poco más visible que el #222 */
-  text-align: center;
-  width: 100%;
-}
-
-/* ── TOGGLE ── */
-.toggle-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  padding: 12px 0;
-  border-top: 0.5px solid #1e1e1e;
-  border-bottom: 0.5px solid #1e1e1e;
-}
-
-.toggle-label {
-  font-size: 12px;
-  letter-spacing: 1px;
-  color: #555;
-}
-
-.toggle-switch { position: relative; display: inline-block; width: 40px; height: 22px; }
-.toggle-switch input { opacity: 0; width: 0; height: 0; }
-.toggle-slider {
-  position: absolute; cursor: pointer; inset: 0;
-  background: #2a2a2a; border-radius: 22px; transition: 0.2s;
-}
-.toggle-slider:before {
-  content: ''; position: absolute;
-  width: 16px; height: 16px; left: 3px; bottom: 3px;
-  background: #555; border-radius: 50%; transition: 0.2s;
-}
-.toggle-switch input:checked + .toggle-slider { background: #8b0000; }
-.toggle-switch input:checked + .toggle-slider:before { transform: translateX(18px); background: #e8e8e8; }
-
-/* ── ROL FALSO ── */
-.rol-falso-hint {
-  margin-top: 1.5rem;
-  padding: 12px 16px;
-  border-left: 2px solid #8b0000;
-  font-size: 13px;
-  color: #888;
-  letter-spacing: 0.5px;
-  line-height: 1.6;
-}
-
-/* ── FOOTER ── */
-.footer-brand {
-  margin-top: 5rem;
-  font-size: 10px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: #222;
-  text-align: center;
-}
