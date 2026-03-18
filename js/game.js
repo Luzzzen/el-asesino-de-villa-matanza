@@ -582,6 +582,7 @@ function saveState() {
 function resetGame() {
   localStorage.clear();
   state = JSON.parse(JSON.stringify(initialState));
+  state.mode = null; // Vital para que el init() sepa que debe mostrar el inicio
   playerData = [{ name: '', age: '', gender: '' }];
   showScreen('screen-mode');
 }
