@@ -1,4 +1,4 @@
-const CACHE = 'villa-matanza-v2';
+const CACHE = 'villa-matanza-v3';
 const ASSETS = [
   '/el-asesino-de-villa-matanza/',
   '/el-asesino-de-villa-matanza/index.html',
