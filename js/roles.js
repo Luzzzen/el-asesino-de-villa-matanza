@@ -6,7 +6,7 @@ const ROLES = {
   },
   secuaz: {
     nombre: 'El Secuaz',
-    desc: 'Sabés quién es el Asesino. No matás, pero ganás con él. Tu trabajo es protegerlo desde adentro.',
+    desc: 'Sabés quién es el Asesino y conocés los roles de todos esta ronda. No matás, pero ganás con él. Usá esa información para protegerlo.',
     villano: true
   },
   testigo: {
@@ -19,9 +19,9 @@ const ROLES = {
     desc: 'Huiste a tiempo. No podés ser asesinado esta noche, pero tampoco podés votar hoy.',
     villano: false
   },
-  guardian: {
-    nombre: 'El Guardián',
-    desc: 'Elegís a alguien para proteger. Si el Asesino lo elige a esa persona, morís vos en su lugar.',
+  sacrificio: {
+    nombre: 'El Sacrificio',
+    desc: 'Elegís a alguien para proteger. Si el Asesino elige a esa persona esta noche, morís vos en su lugar.',
     villano: false
   },
   medium: {
