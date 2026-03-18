@@ -651,13 +651,13 @@ function loadState() {
 
   if (savedState) {
     state = JSON.parse(savedState);
-    renderPlayers();
     switch (state.phase) {
       case 'setup': showScreen('screen-mode'); break;
-      case 'roles': showNextRoleScreen(); break;
-      case 'night': showNightPass(); break;
-      case 'day': showScreen('screen-debate'); break;
-      case 'vote': showVotePass(); break;
+      case 'setup': showScreen('screen-mode'); break;
+      case 'roles': renderPlayers(); showNextRoleScreen(); break;
+      case 'night': renderPlayers(); showNightPass(); break;
+      case 'day': renderPlayers(); showScreen('screen-debate'); break;
+      case 'vote': renderPlayers(); showVotePass(); break;
       case 'gameover': showScreen('screen-gameover'); break;
       default: showScreen('screen-mode');
     }
