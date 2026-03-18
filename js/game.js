@@ -98,7 +98,6 @@ function renderPlayers() {
     removeBtn.style.display = count > minPlayers ? 'block' : 'none';
   });
 
-  // Sincronizar toggle
   const toggle = document.getElementById('toggleRolesFalsos');
   if (toggle) toggle.checked = state.rolesFalsos;
 
@@ -341,7 +340,6 @@ function revealNightAction() {
     desc = 'Esta noche no tenés acción. Villa Matanza duerme.';
   }
 
-  // Mostrar rol falso si está activado y es villano
   const rolFalsoEl = document.getElementById('nightRolFalso');
   if (state.rolesFalsos && (role === 'asesino' || role === 'secuaz') && assignment.rolFalso) {
     rolFalsoEl.style.display = 'block';
@@ -656,6 +654,7 @@ function loadState() {
     state = JSON.parse(savedState);
     renderPlayers();
     switch (state.phase) {
+      case 'setup': showScreen('screen-mode'); break;
       case 'roles': showNextRoleScreen(); break;
       case 'night': showNightPass(); break;
       case 'day': showScreen('screen-debate'); break;
@@ -665,9 +664,6 @@ function loadState() {
     }
     return;
   }
-
-  showScreen('screen-mode');
-}
 
   showScreen('screen-mode');
 }
