@@ -43,6 +43,13 @@
         <span>Total: <span id="count" class="accent">0</span> jugadores</span>
         <span id="playerRangeText">Mín. 5 — Máx. 12</span>
       </div>
+      <div class="toggle-row">
+  <span class="toggle-label">Roles falsos para villanos</span>
+  <label class="toggle-switch">
+    <input type="checkbox" id="toggleRolesFalsos" onchange="toggleRolesFalsos()" />
+    <span class="toggle-slider"></span>
+  </label>
+</div>
       <a href="instrucciones.html" class="btn-instrucciones">INSTRUCCIONES</a>
       <button class="btn-primary" id="startBtn" onclick="goToRoles()" disabled>COMENZAR</button>
       <p class="warning" id="warning">Necesitás al menos 5 jugadores.</p>
@@ -93,6 +100,7 @@
       <h2 class="rol-nombre" id="nightActionTitle"></h2>
       <div class="bloodline"></div>
       <p class="rol-desc" id="nightActionDesc"></p>
+      <p class="rol-falso-hint" id="nightRolFalso" style="display:none"></p>
 
       <!-- Lista de jugadores (asesino / guardián / secuaz-sugerencia) -->
       <div id="nightPlayerPicker" style="display:none">
