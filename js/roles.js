@@ -36,7 +36,7 @@ const ROLES = {
   }
 };
 
-const ROLES_FALSOS = ['testigo', 'cobarde', 'guardian', 'medium', 'extra'];
+const ROLES_FALSOS = ['testigo', 'cobarde', 'sacrificio', 'medium', 'extra'];
 
 function getRolFalso(rolReal) {
   const opciones = ROLES_FALSOS.filter(r => r !== rolReal);
