@@ -641,6 +641,12 @@ function saveState() {
 }
 
 function loadState() {
+  if (new URLSearchParams(window.location.search).get('from') === 'instrucciones') {
+    history.replaceState(null, '', window.location.pathname);
+    showScreen('screen-mode');
+    return;
+  }
+
   const savedPD = localStorage.getItem('vm_playerData');
   const savedState = localStorage.getItem('vm_state');
   if (savedPD) playerData = JSON.parse(savedPD);
@@ -659,6 +665,9 @@ function loadState() {
     }
     return;
   }
+
+  showScreen('screen-mode');
+}
 
   showScreen('screen-mode');
 }
