@@ -641,7 +641,6 @@ function saveState() {
 function loadState() {
   if (new URLSearchParams(window.location.search).get('from') === 'instrucciones') {
     history.replaceState(null, '', window.location.pathname);
-    showScreen('screen-mode');
     return;
   }
 
