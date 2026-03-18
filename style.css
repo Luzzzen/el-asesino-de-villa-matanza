@@ -432,44 +432,50 @@ input[type=number] { -moz-appearance: textfield; }
 }
 
 /* ── MODO DE JUEGO ── */
+#screen-mode .container {
+  display: flex;
+  flex-direction: column;
+  min-height: 90vh; /* Asegura espacio para el footer */
+}
+
 .mode-grid {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-top: 1rem;
+  gap: 16px; /* Un poco más de aire */
+  margin: 1.5rem 0;
 }
 
-.mode-btn {
+#screen-mode .mode-btn {
   width: 100%;
-  background: #1a1a1a;
-  border: 0.5px solid #2a2a2a;
+  background: #1a1a1a !important; /* Forzamos el color para que no se herede de instrucciones */
+  border: 1px solid #2a2a2a;
   color: #e8e8e8;
-  padding: 20px 16px;
+  padding: 24px 20px;
   cursor: pointer;
-  border-radius: 2px;
+  border-radius: 4px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  transition: all 0.2s;
+  gap: 8px;
+  transition: all 0.3s ease;
   text-align: left;
 }
 
-.mode-btn:hover { border-color: #8b0000; background: #1f0000; }
-
-.mode-name {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 28px;
-  letter-spacing: 4px;
-  color: #e8e8e8;
-  display: block;
+#screen-mode .mode-btn:hover { 
+  border-color: #8b0000; 
+  background: #252525 !important; 
+  transform: translateY(-2px);
 }
 
-.mode-players {
-  font-size: 11px;
-  letter-spacing: 2px;
+/* ── FOOTER Y BRANDING ── */
+.footer-brand {
+  margin-top: auto; /* Empuja el "By Luzzzen" al fondo */
+  padding-top: 3rem;
+  font-size: 10px;
+  letter-spacing: 4px;
   text-transform: uppercase;
-  color: #555;
-  display: block;
+  color: #333; /* Un gris un poco más visible que el #222 */
+  text-align: center;
+  width: 100%;
 }
 
 /* ── TOGGLE ── */
