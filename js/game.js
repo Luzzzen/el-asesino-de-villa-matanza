@@ -1,5 +1,5 @@
-// ── ESTADO ────────────────────────────────────────────
-let state = {
+// ── ESTADO INICIAL ────────────────────────────────────────────
+const initialState = {
   mode: null,
   rolesFalsos: false,
   players: [],
@@ -9,14 +9,12 @@ let state = {
   round: 0,
   phase: 'setup',
   currentRoleIndex: 0,
-
   nightOrder: [],
   nightIndex: 0,
   nightVictim: null,
   nightProtected: null,
   secuazSuggestion: null,
   asinoPicked: false,
-
   voteOrder: [],
   voteIndex: 0,
   votes: {},
@@ -29,15 +27,39 @@ let state = {
   pistasUsadas: [],
 };
 
+let state = JSON.parse(JSON.stringify(initialState));
 let playerData = [];
 let timerInterval = null;
 
+// Función para inicializar (llamar al final del archivo o aquí)
+function init() {
+    // Si no hay modo elegido, forzamos pantalla de inicio
+    if (!state.mode) {
+        showScreen('screen-mode');
+    } else {
+        // Si ya hay modo, mostramos setup (esto evita el bug del F5)
+        renderPlayers();
+        showScreen('screen-setup');
+    }
+}
+
 // ── PANTALLAS ─────────────────────────────────────────
 function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.screen').forEach(s => {
+      s.classList.remove('active');
+      s.style.display = 'none'; // Aseguramos que no ocupen espacio
+  });
+  const activeScreen = document.getElementById(id);
+  if (activeScreen) {
+      activeScreen.style.display = 'block';
+      // Pequeño timeout para que la animación de CSS (opacity) funcione
+      setTimeout(() => activeScreen.classList.add('active'), 10);
+  }
   window.scrollTo(0, 0);
 }
+
+// Al final de tu game.js, agregá esta línea para que arranque:
+document.addEventListener('DOMContentLoaded', init);
 
 // ── MODO DE JUEGO ─────────────────────────────────────
 function selectMode(mode) {
