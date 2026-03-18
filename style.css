@@ -85,6 +85,47 @@ body {
 
 .accent { color: #8b0000; }
 
+/* ── ANIMACIONES PANTALLA PRINCIPAL ── */
+
+/* Bloodline se dibuja de izquierda a derecha */
+#screen-mode .bloodline {
+  width: 0;
+  animation: drawLine 0.8s ease forwards 0.3s;
+}
+
+@keyframes drawLine {
+  to { width: 40px; }
+}
+
+/* Subtítulo con flicker */
+#screen-mode .subtitulo {
+  animation: flicker 3s ease 1.2s both;
+}
+
+@keyframes flicker {
+  0%   { opacity: 0; }
+  10%  { opacity: 0.8; }
+  12%  { opacity: 0; }
+  20%  { opacity: 0.9; }
+  22%  { opacity: 0.2; }
+  30%  { opacity: 1; }
+  70%  { opacity: 1; }
+  72%  { opacity: 0.3; }
+  74%  { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+/* Goteo sutil detrás del título */
+#screen-mode .titulo {
+  position: relative;
+  animation: titleDrip 1s ease forwards;
+}
+
+@keyframes titleDrip {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 /* ── JUGADORES ── */
 .player-list {
   display: flex;
