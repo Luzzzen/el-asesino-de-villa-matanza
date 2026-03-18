@@ -1,6 +1,7 @@
 // ── ESTADO ────────────────────────────────────────────
 let state = {
   mode: null,
+  rolesFalsos: false,
   players: [],
   alive: [],
   dead: [],
@@ -97,6 +98,10 @@ function renderPlayers() {
     removeBtn.style.display = count > minPlayers ? 'block' : 'none';
   });
 
+  // Sincronizar toggle
+  const toggle = document.getElementById('toggleRolesFalsos');
+  if (toggle) toggle.checked = state.rolesFalsos;
+
   updateCounter();
 }
 
@@ -122,6 +127,11 @@ function updateCounter() {
   else if (hasDupes) warn = 'Hay nombres repetidos.';
   else if (playerData.length < minPlayers) warn = `Necesitás al menos ${minPlayers} jugadores.`;
   document.getElementById('warning').textContent = warn;
+}
+
+function toggleRolesFalsos() {
+  state.rolesFalsos = document.getElementById('toggleRolesFalsos').checked;
+  saveState();
 }
 
 function hasDuplicates() {
@@ -300,7 +310,6 @@ function revealNightAction() {
       desc = state.nightVictim ? `Esta noche eligió a: ${state.nightVictim}` : 'El Asesino aún no eligió.';
     } else {
       title = 'ROLES ESTA RONDA';
-      // Mostrar roles de todos excepto el asesino (ya lo sabe) y el propio secuaz
       const otrosRoles = state.assignments.filter(a => a.role !== 'asesino' && a.name !== name);
       desc = 'Dejá una sugerencia al Asesino si querés.\n\n' +
         otrosRoles.map(a => `${a.name}: ${ROLES[a.role].nombre}`).join('\n');
@@ -330,6 +339,15 @@ function revealNightAction() {
   } else {
     title = 'DESCANSÁS';
     desc = 'Esta noche no tenés acción. Villa Matanza duerme.';
+  }
+
+  // Mostrar rol falso si está activado y es villano
+  const rolFalsoEl = document.getElementById('nightRolFalso');
+  if (state.rolesFalsos && (role === 'asesino' || role === 'secuaz') && assignment.rolFalso) {
+    rolFalsoEl.style.display = 'block';
+    rolFalsoEl.textContent = `Si te preguntan tu rol, decí: ${ROLES[assignment.rolFalso].nombre}`;
+  } else {
+    rolFalsoEl.style.display = 'none';
   }
 
   document.getElementById('nightActionTitle').textContent = title;
@@ -650,8 +668,10 @@ function resetGame() {
   localStorage.removeItem('vm_playerData');
   playerData = [{ name: '', age: '', gender: '' }];
   state = {
-    mode: null, players: [], alive: [], dead: [], assignments: [], round: 0, phase: 'setup', currentRoleIndex: 0,
-    nightOrder: [], nightIndex: 0, nightVictim: null, nightProtected: null, secuazSuggestion: null, asinoPicked: false,
+    mode: null, rolesFalsos: false, players: [], alive: [], dead: [], assignments: [],
+    round: 0, phase: 'setup', currentRoleIndex: 0,
+    nightOrder: [], nightIndex: 0, nightVictim: null, nightProtected: null,
+    secuazSuggestion: null, asinoPicked: false,
     voteOrder: [], voteIndex: 0, votes: {}, mediumPlayer: null, mediumUsed: false,
     cobardeActive: null, testigoActive: null, sacrificioActive: null, mediumActive: null, pistasUsadas: []
   };
