@@ -459,15 +459,23 @@ input:checked + .slider:before { transform: translateX(22px); }
 }
 
 #screen-transition {
-  display: flex;
   align-items: center;
   justify-content: center;
   height: 100vh;
 }
 
+#screen-transition.active {
+  display: flex;
+}
+
+#screen-transition {
+  background: #000;
+}
+
 #transitionText {
   font-size: 48px;
-  animation: fadeZoom 1s ease;
+  letter-spacing: 4px;
+  animation: fadeZoom 1s ease, flicker 2s infinite;
 }
 
 @keyframes fadeZoom {
