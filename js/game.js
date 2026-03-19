@@ -464,7 +464,7 @@ if (victim && state.nightProtected === victim) {
   state.nightVictim = victim;
   if (victim) { state.alive = state.alive.filter(p => p !== victim); state.dead.push(victim); }
   saveState();
-  showDayAnnounce(victim, sacrificioDied);
+  showTransition('AMANECE', () => showDayAnnounce(victim, sacrificioDied));
 }
 
 // ── DÍA ───────────────────────────────────────────────
