@@ -457,3 +457,26 @@ input:checked + .slider:before { transform: translateX(22px); }
     text-align: center; 
     text-transform: uppercase;
 }
+
+#screen-transition {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+#transitionText {
+  font-size: 48px;
+  animation: fadeZoom 1s ease;
+}
+
+@keyframes fadeZoom {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
