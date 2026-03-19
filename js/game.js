@@ -665,3 +665,14 @@ function init() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
+
+// ── VENTANA ENTRE DIA/NOCHE ──────────────────────────────────
+
+function showTransition(text, callback) {
+  document.getElementById('transitionText').textContent = text;
+  showScreen('screen-transition');
+
+  setTimeout(() => {
+    callback();
+  }, 1500);
+}
