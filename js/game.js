@@ -501,6 +501,7 @@ if (victim && state.nightProtected === victim) {
 }
   state.nightVictim = victim;
   if (victim) { state.alive = state.alive.filter(p => p !== victim); state.dead.push(victim); }
+  state.cobardeBlocked = state.cobardeActive;
   saveState();
   showTransition('AMANECE', () => showDayAnnounce(victim, sacrificioDied));
 }
