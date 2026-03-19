@@ -599,7 +599,10 @@ function showGameOver(result) {
   const desc = document.getElementById('gameoverDesc');
   title.textContent = result === 'survivors' ? 'VILLA MATANZA SALVADA' : 'EL ASESINO GANÓ';
   title.style.color = result === 'survivors' ? '#e8e8e8' : '#8b0000';
-  document.getElementById('gameoverRoles').innerHTML = state.assignments.map(a => `<div class="gameover-role-row"><span>${a.name}</span><span>${ROLES[a.role].nombre}</span></div>`).join('');
+  document.getElementById('gameoverRoles').innerHTML = state.assignments
+  .filter(a => a.role === 'asesino' || a.role === 'secuaz')
+  .map(a => `<div class="gameover-role-row"><span>${a.name}</span><span class="villain-tag">${ROLES[a.role].nombre}</span></div>`)
+  .join('');
   showScreen('screen-gameover');
   saveState();
 }
