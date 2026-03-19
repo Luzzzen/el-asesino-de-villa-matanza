@@ -352,6 +352,7 @@ function revealNightAction() {
     rolFalsoEl.style.display = 'none';
   }
 
+  document.getElementById('nightActionLabel').textContent = 'Tu acción';
   document.getElementById('nightActionTitle').textContent = title;
   document.getElementById('nightActionDesc').textContent = desc;
   showScreen('screen-night-action');
