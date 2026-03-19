@@ -307,7 +307,7 @@ function revealNightAction() {
     desc = state.mode === 'complice' ? (state.secuazSuggestion ? `El Secuaz sugiere: ${state.secuazSuggestion}` : 'El Secuaz aún no dejó sugerencia.') : 'Elegí a quién eliminar esta noche.';
     showNightPicker(state.alive.filter(p => p !== name), chosen => {
       state.nightVictim = chosen;
-      state.asinoPicked = true;
+      state.asesinoPicked = true;
       saveState();
     });
   } else if (role === 'secuaz') {
