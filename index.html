@@ -187,7 +187,13 @@
       <div class="bloodline"></div>
       <p class="rol-desc" id="gameoverDesc"></p>
       <div id="gameoverRoles" class="gameover-roles"></div>
-      <button class="btn-primary" style="margin-top:2rem" onclick="resetGame()">NUEVA PARTIDA</button>
+      <button class="btn-primary" style="margin-top:2rem" onclick="resetGame(false)">
+  NUEVA PARTIDA<br>
+  <small style="font-size:10px;opacity:0.7">con los mismos jugadores</small>
+</button>
+      <button class="btn-primary" style="margin-top:1rem" onclick="resetGame(true)">
+  MENÚ INICIAL
+</button>
     </div>
   </div>
 
