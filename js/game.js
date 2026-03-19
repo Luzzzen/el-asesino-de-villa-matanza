@@ -612,6 +612,7 @@ function afterVoteResult() {
   state.mediumUsed = false;
   state.pistasUsadas = state.pistasUsadas || [];
   state.assignments = assignRoles(state.alive);
+  state.cobardeBlocked = null;
   trackActiveRoles();
   startNight();
 }
