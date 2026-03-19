@@ -281,7 +281,7 @@ function startNight() {
   state.secuazSuggestion = null;
   state.asinoPicked = false;
   saveState();
-  showNightPass();
+  showTransition('NOCHE', showNightPass);
 }
 
 function showNightPass() {
