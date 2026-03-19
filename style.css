@@ -29,12 +29,10 @@ body {
 .container { 
     max-width: 480px; 
     margin: 0 auto; 
-    padding: 1rem 1.5rem; /* Reducido para evitar scroll */
+    padding: 1rem 1.5rem 3rem;
     display: flex; 
     flex-direction: column; 
     min-height: 100vh;
-    height: 100vh; /* Fuerza a que no crezca más que la pantalla */
-    overflow: hidden; /* Corta cualquier cosa que quiera scrollear */
 }
 
 /* --- 2. ANIMACIONES (El alma del juego) --- */
