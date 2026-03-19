@@ -311,7 +311,7 @@ function revealNightAction() {
       saveState();
     });
   } else if (role === 'secuaz') {
-    if (state.asinoPicked) {
+    if (state.asesinoPicked)
       title = 'EL ASESINO ACTUÓ';
       desc = state.nightVictim ? `Esta noche eligió a: ${state.nightVictim}` : 'El Asesino aún no eligió.';
     } else {
