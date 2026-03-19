@@ -190,29 +190,61 @@ document.addEventListener('click', e => {
 
 // ── ASIGNACIÓN DE ROLES ───────────────────────────────
 function assignRoles(alivePlayers) {
-  const shuffled = [...alivePlayers].sort(() => Math.random() - 0.5);
-  const asesino = shuffled[0];
   const result = [];
 
-  let sobrevivientes;
-  if (state.mode === 'solo') {
-    sobrevivientes = shuffled.slice(1);
-    result.push({ name: asesino, role: 'asesino', rolFalso: getRolFalso('asesino'), complice: null });
-  } else {
-    const secuaz = shuffled[1];
-    sobrevivientes = shuffled.slice(2);
-    result.push({ name: asesino, role: 'asesino', rolFalso: getRolFalso('asesino'), complice: secuaz });
-    result.push({ name: secuaz, role: 'secuaz', rolFalso: getRolFalso('secuaz'), complice: asesino });
+  // ── VILLANOS FIJOS ──
+  if (!state.fixedVillains || state.fixedVillains.length === 0) {
+    const shuffled = [...alivePlayers].sort(() => Math.random() - 0.5);
+
+    if (state.mode === 'solo') {
+      state.fixedVillains = [shuffled[0]];
+    } else {
+      state.fixedVillains = [shuffled[0], shuffled[1]];
+    }
   }
 
-  const especiales = state.round <= 1 ? ['testigo', 'cobarde', 'sacrificio'] : ['testigo', 'cobarde', 'sacrificio', 'medium'];
-  const probRoles = { testigo: 0.5, cobarde: 0.5, sacrificio: 0.5, medium: 0.33 };
-  let rolesPool = [];
-  especiales.forEach(r => { if (Math.random() < probRoles[r]) rolesPool.push(r); });
-  while (rolesPool.length < sobrevivientes.length) rolesPool.push('extra');
-  rolesPool = rolesPool.slice(0, sobrevivientes.length).sort(() => Math.random() - 0.5);
+  const asesino = state.fixedVillains[0];
+  const secuaz = state.fixedVillains[1];
 
-  sobrevivientes.forEach((name, i) => result.push({ name, role: rolesPool[i] }));
+  result.push({
+    name: asesino,
+    role: 'asesino',
+    rolFalso: getRolFalso('asesino'),
+    complice: secuaz || null
+  });
+
+  if (state.mode !== 'solo' && secuaz) {
+    result.push({
+      name: secuaz,
+      role: 'secuaz',
+      rolFalso: getRolFalso('secuaz'),
+      complice: asesino
+    });
+  }
+
+  const sobrevivientes = alivePlayers.filter(p => !state.fixedVillains.includes(p));
+
+  const especiales = state.round <= 1
+    ? ['testigo', 'cobarde', 'sacrificio']
+    : ['testigo', 'cobarde', 'sacrificio', 'medium'];
+
+  const probRoles = { testigo: 0.5, cobarde: 0.5, sacrificio: 0.5, medium: 0.33 };
+
+  let rolesPool = [];
+  especiales.forEach(r => {
+    if (Math.random() < probRoles[r]) rolesPool.push(r);
+  });
+
+  while (rolesPool.length < sobrevivientes.length) rolesPool.push('extra');
+
+  rolesPool = rolesPool
+    .slice(0, sobrevivientes.length)
+    .sort(() => Math.random() - 0.5);
+
+  sobrevivientes.forEach((name, i) => {
+    result.push({ name, role: rolesPool[i] });
+  });
+
   return result.sort(() => Math.random() - 0.5);
 }
 
