@@ -379,6 +379,48 @@ function generarPista() {
     if (!state.pistasUsadas.includes(pista)) candidatas.push(pista);
   });
 
+  villains.forEach(v => {
+    const pd = playerData.find(p => p.name.trim() === v.name);
+    if (pd && pd.gender) {
+      const genText = pd.gender === 'M' ? 'masculino' : pd.gender === 'F' ? 'femenino' : 'no binario';
+      const pista = `Uno de los villanos es de género ${genText}.`;
+      if (!state.pistasUsadas.includes(pista)) candidatas.push(pista);
+    }
+  });
+
+  villains.forEach(v => {
+    const nombre = v.name.toLowerCase();
+    const consonantesEnNombre = [...new Set(nombre.split('').filter(c => consonantes.includes(c)))];
+    consonantesEnNombre.forEach(c => {
+      const pista = `El nombre de uno de los villanos contiene la letra "${c.toUpperCase()}".`;
+      if (!state.pistasUsadas.includes(pista)) candidatas.push(pista);
+    });
+  });
+
+  if (villains.length === 2) {
+    const pd0 = playerData.find(p => p.name.trim() === villains[0].name);
+    const pd1 = playerData.find(p => p.name.trim() === villains[1].name);
+    if (pd0 && pd1 && pd0.gender && pd1.gender) {
+      const pista = pd0.gender === pd1.gender
+        ? 'Los dos villanos son del mismo género.'
+        : 'Los dos villanos son de géneros distintos.';
+      if (!state.pistasUsadas.includes(pista)) candidatas.push(pista);
+    }
+  }
+
+  if (candidatas.length === 0) return 'No quedan pistas disponibles. Confiá en tu intuición.';
+  const elegida = candidatas[Math.floor(Math.random() * candidatas.length)];
+  state.pistasUsadas.push(elegida);
+  saveState();
+  return elegida;
+}
+  });
+
+  inocentes.forEach(v => {
+    const pista = `${v.name} no es el Asesino.`;
+    if (!state.pistasUsadas.includes(pista)) candidatas.push(pista);
+  });
+
   if (candidatas.length === 0) return 'No quedan pistas disponibles. Confiá en tu intuición.';
   const elegida = candidatas[Math.floor(Math.random() * candidatas.length)];
   state.pistasUsadas.push(elegida);
@@ -461,6 +503,11 @@ function startVoting() {
   state.votes = {};
   state.alive.forEach(p => state.votes[p] = 0);
   let voters = state.alive.filter(p => p !== state.cobardeActive);
+  state.mediumPlayer = null;
+  if (state.mediumActive && state.alive.includes(state.mediumActive) && state.dead.length > 0 && !state.mediumUsed) {
+    state.mediumPlayer = state.dead[Math.floor(Math.random() * state.dead.length)];
+    state.mediumUsed = true;
+  }
   state.voteOrder = voters.sort(() => Math.random() - 0.5);
   state.voteIndex = 0;
   saveState();
@@ -468,15 +515,20 @@ function startVoting() {
 }
 
 function showVotePass() {
-  if (state.voteIndex >= state.voteOrder.length) { resolveVote(); return; }
-  const name = state.voteOrder[state.voteIndex];
+  const isMediumTurn = state.mediumPlayer && state.voteIndex >= state.voteOrder.length;
+  if (!isMediumTurn && state.voteIndex >= state.voteOrder.length) { resolveVote(); return; }
+  const name = isMediumTurn ? state.mediumPlayer : state.voteOrder[state.voteIndex];
   document.getElementById('votePlayerName').textContent = name.toUpperCase();
   document.getElementById('voteRoundNum').textContent = state.round;
+  const instr = document.querySelector('#screen-vote-pass .instruccion');
+  if (instr) instr.textContent = isMediumTurn ? 'El Médium invocó tu voto.\nVotá en nombre de los muertos.' : 'Votá en privado.\nNo muestres tu pantalla.';
   showScreen('screen-vote-pass');
 }
 
 function revealVote() {
-  const currentVoter = state.voteOrder[state.voteIndex];
+  const isMediumTurn = state.mediumPlayer && state.voteIndex >= state.voteOrder.length;
+  const currentVoter = isMediumTurn ? state.mediumPlayer : state.voteOrder[state.voteIndex];
+  document.getElementById('voteActionLabel').textContent = isMediumTurn ? `Voto de ${state.mediumPlayer} (invocado)` : '¿A quién eliminás?';
   const list = document.getElementById('votePickerList');
   list.innerHTML = '';
   const options = state.alive.filter(p => p !== currentVoter);
@@ -488,6 +540,7 @@ function revealVote() {
       state.votes[name] = (state.votes[name] || 0) + 1;
       state.voteIndex++;
       saveState();
+      if (isMediumTurn) { resolveVote(); return; }
       showVotePass();
     };
     list.appendChild(btn);
