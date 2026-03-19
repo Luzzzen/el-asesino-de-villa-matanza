@@ -26,6 +26,7 @@ const initialState = {
   mediumActive: null,
   pistasUsadas: [],
   fixedVillains: [],
+  cobardeBlocked: null,
 };
 
 let state = JSON.parse(JSON.stringify(initialState));
