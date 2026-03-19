@@ -446,15 +446,21 @@ function nextNightPlayer() {
 
 function resolveNight() {
   let victim = state.nightVictim;
-  let sacrificioDied = false;
+let sacrificioDied = false;
 
-  if (victim && state.nightProtected === victim) {
-    const sacrificio = state.assignments.find(a => a.role === 'sacrificio' && state.alive.includes(a.name));
-    if (sacrificio) { victim = sacrificio.name; sacrificioDied = true; }
+// 1. Cobarde cancela TODO
+if (victim && victim === state.cobardeActive) {
+  victim = null;
+}
+
+// 2. Sacrificio (solo si sigue habiendo víctima)
+if (victim && state.nightProtected === victim) {
+  const sacrificio = state.assignments.find(a => a.role === 'sacrificio' && state.alive.includes(a.name));
+  if (sacrificio) {
+    victim = sacrificio.name;
+    sacrificioDied = true;
   }
-
-  if (victim && victim === state.cobardeActive) victim = null;
-
+}
   state.nightVictim = victim;
   if (victim) { state.alive = state.alive.filter(p => p !== victim); state.dead.push(victim); }
   saveState();
