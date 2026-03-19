@@ -401,7 +401,7 @@ function generarPista() {
     });
   });
 
-  if (villains.length === 2) {
+  if (state.mode !== 'solo' && villains.length === 2) {
     const pd0 = playerData.find(p => p.name.trim() === villains[0].name);
     const pd1 = playerData.find(p => p.name.trim() === villains[1].name);
     if (pd0 && pd1 && pd0.gender && pd1.gender) {
