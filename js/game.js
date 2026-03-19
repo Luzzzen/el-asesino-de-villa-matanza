@@ -14,7 +14,7 @@ const initialState = {
   nightVictim: null,
   nightProtected: null,
   secuazSuggestion: null,
-  asinoPicked: false,
+  asesinoPicked: false,
   voteOrder: [],
   voteIndex: 0,
   votes: {},
