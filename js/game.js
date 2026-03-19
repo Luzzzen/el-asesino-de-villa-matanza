@@ -364,8 +364,10 @@ function revealNightAction() {
     title = 'HUISTE';
     desc = 'Esta noche estás a salvo. Si el Asesino te elige, nadie muere. Tampoco podés votar mañana.';
   } else if (role === 'testigo') {
-    title = 'EL TESTIGO';
-    desc = generarPista();
+  title = 'EL TESTIGO';
+  const pista = generarPista();
+  desc = pista + '\n\n⚠️ Recordá esta pista.\nDebés decirla durante el día tal como es.\nNo podés mentir, cambiarla ni ocultarla.';
+}
   } else if (role === 'sacrificio') {
     title = 'ELEGÍ A QUIÉN PROTEGER';
     desc = 'Si el Asesino elige a esa persona esta noche, morís vos en su lugar.';
