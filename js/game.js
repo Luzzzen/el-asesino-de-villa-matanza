@@ -608,12 +608,14 @@ function showGameOver(result) {
 function startTimer(seconds, onComplete) {
   clearTimer();
   let remaining = seconds;
-  const bar = document.getElementById('timerBar');
-  const text = document.getElementById('timerText');
+  const wrap = document.getElementById('timerWrap');
+  wrap.innerHTML = `<div class="timer-bar-bg"><div class="timer-bar" id="timerBar" style="width:100%"></div></div><p class="timer-text" id="timerText">${remaining}</p>`;
   timerInterval = setInterval(() => {
     remaining--;
-    if (bar) bar.style.width = `${(remaining / seconds) * 100}%`;
-    if (text) text.textContent = remaining;
+    const b = document.getElementById('timerBar');
+    const t = document.getElementById('timerText');
+    if (b) b.style.width = `${(remaining / seconds) * 100}%`;
+    if (t) t.textContent = remaining;
     if (remaining <= 0) { clearTimer(); onComplete(); }
   }, 1000);
 }
