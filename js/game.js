@@ -626,11 +626,16 @@ function saveState() {
   localStorage.setItem('vm_playerData', JSON.stringify(playerData));
 }
 
-function resetGame() {
-  localStorage.clear();
+function resetGame(fullReset = true) {
+  if (fullReset) {
+    localStorage.removeItem('vm_state');
+    localStorage.removeItem('vm_playerData');
+    playerData = [{ name: '', age: '', gender: '' }];
+  }
+
   state = JSON.parse(JSON.stringify(initialState));
-  state.mode = null; 
-  playerData = [{ name: '', age: '', gender: '' }];
+  state.mode = null;
+
   showScreen('screen-mode');
 }
 
