@@ -218,6 +218,7 @@ function assignRoles(alivePlayers) {
 
 function goToRoles() {
   const names = playerData.map(p => p.name.trim());
+  state.fixedVillains = [];
   state.players = names;
   state.alive = [...names];
   state.dead = [];
