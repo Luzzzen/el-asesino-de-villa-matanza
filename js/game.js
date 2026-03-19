@@ -578,6 +578,8 @@ function resolveVote() {
 
 function afterVoteResult() {
   state.round++;
+  state.mediumUsed = false;
+  state.pistasUsadas = state.pistasUsadas || [];
   state.assignments = assignRoles(state.alive);
   trackActiveRoles();
   startNight();
