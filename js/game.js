@@ -670,12 +670,16 @@ function resetGame(fullReset = true) {
     localStorage.removeItem('vm_state');
     localStorage.removeItem('vm_playerData');
     playerData = [{ name: '', age: '', gender: '' }];
+    state = JSON.parse(JSON.stringify(initialState));
+    state.mode = null;
+    showScreen('screen-mode');
+  } else {
+    state = JSON.parse(JSON.stringify(initialState));
+    state.mode = state.mode || 'solo'; // fallback por si acaso
+    state.phase = 'setup';
+    renderPlayers();
+    showScreen('screen-setup');
   }
-
-  state = JSON.parse(JSON.stringify(initialState));
-  state.mode = null;
-
-  showScreen('screen-mode');
 }
 
 // ── INICIO UNIFICADO ──────────────────────────────────
