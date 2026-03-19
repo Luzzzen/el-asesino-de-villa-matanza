@@ -279,7 +279,7 @@ function startNight() {
   state.nightVictim = null;
   state.nightProtected = null;
   state.secuazSuggestion = null;
-  state.asinoPicked = false;
+  state.asesinoPicked = false;
   saveState();
   showTransition('NOCHE', showNightPass);
 }
@@ -311,10 +311,12 @@ function revealNightAction() {
       saveState();
     });
   } else if (role === 'secuaz') {
-    if (state.asesinoPicked)
-      title = 'EL ASESINO ACTUÓ';
-      desc = state.nightVictim ? `Esta noche eligió a: ${state.nightVictim}` : 'El Asesino aún no eligió.';
-    } else {
+    if (state.asesinoPicked) {
+  title = 'EL ASESINO ACTUÓ';
+  desc = state.nightVictim 
+    ? `Esta noche eligió a: ${state.nightVictim}` 
+    : 'El Asesino aún no eligió.';
+} else {
       title = 'ROLES ESTA RONDA';
       const otrosRoles = state.assignments.filter(a => a.role !== 'asesino' && a.name !== name);
       desc = 'Dejá una sugerencia al Asesino si querés.\n\n' + otrosRoles.map(a => `${a.name}: ${ROLES[a.role].nombre}`).join('\n');
