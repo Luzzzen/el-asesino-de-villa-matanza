@@ -369,7 +369,9 @@ function generarPista() {
   villains.forEach(v => {
     const pd = playerData.find(p => p.name.trim() === v.name);
     if (pd && pd.age) {
-      const pista = `Uno de los villanos tiene ${pd.age} años.`;
+      const pista = state.mode === 'solo'
+        ? `El Asesino tiene ${pd.age} años.`
+        : `Uno de los villanos tiene ${pd.age} años.`;
       if (!state.pistasUsadas.includes(pista)) candidatas.push(pista);
     }
   });
