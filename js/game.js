@@ -385,7 +385,9 @@ function generarPista() {
     const pd = playerData.find(p => p.name.trim() === v.name);
     if (pd && pd.gender) {
       const genText = pd.gender === 'M' ? 'masculino' : pd.gender === 'F' ? 'femenino' : 'no binario';
-      const pista = `Uno de los villanos es de género ${genText}.`;
+      const pista = state.mode === 'solo'
+        ? `El Asesino es de género ${genText}.`
+        : `Uno de los villanos es de género ${genText}.`;
       if (!state.pistasUsadas.includes(pista)) candidatas.push(pista);
     }
   });
