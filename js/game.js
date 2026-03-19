@@ -62,7 +62,7 @@ function renderPlayers() {
   const count = playerData.length;
   const mode = state.mode;
 
-  list.innerHTML = ''; // Limpiamos para asegurar alineación fresca
+  list.innerHTML = ''; 
 
   playerData.forEach((player, i) => {
     const minPlayers = mode === 'solo' ? 5 : 7;
@@ -97,7 +97,6 @@ function renderPlayers() {
   updateCounter();
 }
 
-// Nueva función auxiliar para que el JS no se pierda con los inputs
 function updatePlayerData(index, field, value) {
     playerData[index][field] = value;
     updateCounter();
@@ -161,7 +160,7 @@ function removePlayer(i) {
   }
 }
 
-// Event Listeners para la lista de jugadores
+// Event Listeners 
 document.addEventListener('input', e => {
   if (e.target.dataset.field) {
     const i = parseInt(e.target.dataset.i);
@@ -409,20 +408,8 @@ function generarPista() {
         ? 'Los dos villanos son del mismo género.'
         : 'Los dos villanos son de géneros distintos.';
       if (!state.pistasUsadas.includes(pista)) candidatas.push(pista);
+    }
   }
-
-  if (candidatas.length === 0) return 'No quedan pistas disponibles. Confiá en tu intuición.';
-  const elegida = candidatas[Math.floor(Math.random() * candidatas.length)];
-  state.pistasUsadas.push(elegida);
-  saveState();
-  return elegida;
-}
-  });
-
-  inocentes.forEach(v => {
-    const pista = `${v.name} no es el Asesino.`;
-    if (!state.pistasUsadas.includes(pista)) candidatas.push(pista);
-  });
 
   if (candidatas.length === 0) return 'No quedan pistas disponibles. Confiá en tu intuición.';
   const elegida = candidatas[Math.floor(Math.random() * candidatas.length)];
@@ -635,7 +622,7 @@ function saveState() {
 function resetGame() {
   localStorage.clear();
   state = JSON.parse(JSON.stringify(initialState));
-  state.mode = null; // Vital para que el init() sepa que debe mostrar el inicio
+  state.mode = null; 
   playerData = [{ name: '', age: '', gender: '' }];
   showScreen('screen-mode');
 }
@@ -653,13 +640,9 @@ function init() {
   
   if (savedState) {
     state = JSON.parse(savedState);
-    
-    // Si la fase es 'setup' pero no hay modo, o si el modo es null,
-    // forzamos el regreso a la pantalla principal.
     if (!state.mode || state.mode === null) {
       showScreen('screen-mode');
     } else {
-      // Si hay un juego en curso real (fase avanzada o setup con modo), restauramos
       if (state.phase === 'setup') { 
         renderPlayers(); 
         showScreen('screen-setup'); 
@@ -671,7 +654,6 @@ function init() {
       else showScreen('screen-mode');
     }
   } else {
-    // Si no hay nada guardado, pantalla de inicio limpia
     showScreen('screen-mode');
   }
 }
