@@ -537,7 +537,7 @@ function startVoting() {
   state.phase = 'vote';
   state.votes = {};
   state.alive.forEach(p => state.votes[p] = 0);
-  let voters = state.alive.filter(p => p !== state.cobardeActive);
+  let voters = state.alive.filter(p => p !== state.cobardeBlocked);
   state.mediumPlayer = null;
   if (state.mediumActive && state.alive.includes(state.mediumActive) && state.dead.length > 0 && !state.mediumUsed) {
     state.mediumPlayer = state.dead[Math.floor(Math.random() * state.dead.length)];
