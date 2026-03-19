@@ -409,7 +409,6 @@ function generarPista() {
         ? 'Los dos villanos son del mismo género.'
         : 'Los dos villanos son de géneros distintos.';
       if (!state.pistasUsadas.includes(pista)) candidatas.push(pista);
-    }
   }
 
   if (candidatas.length === 0) return 'No quedan pistas disponibles. Confiá en tu intuición.';
