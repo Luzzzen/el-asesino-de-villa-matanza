@@ -1,10 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap');
 
-/* --- 1. CONFIGURACIÓN GLOBAL --- */
+/* --- CONFIGURACIÓN GLOBAL --- */
 :root {
     --rojo-sangre: #8b0000;
     --rojo-hover: #a30000;
-    --negro-fondo: #121212; /* Tu gris oscuro preferido */
+    --negro-fondo: #121212;
     --gris-oscuro: #1a1a1a;
     --gris-borde: #2a2a2a;
     --texto-principal: #e8e8e8;
@@ -35,7 +35,7 @@ body {
     min-height: 100vh;
 }
 
-/* --- 2. ANIMACIONES (El alma del juego) --- */
+/* --- ANIMACIONES --- */
 .screen { display: none; opacity: 0; }
 .screen.active { display: block; animation: fadeIn 0.4s ease forwards; }
 
@@ -49,7 +49,7 @@ body {
     20%, 24%, 55% { opacity: 0.3; }
 }
 
-/* --- 3. BRANDING --- */
+/* --- BRANDING --- */
 .titulo { 
     font-family: 'Bebas Neue', sans-serif; 
     font-size: 56px; 
@@ -76,7 +76,28 @@ body {
     margin: 1rem 0 2rem; 
 }
 
-/* --- 4. LISTA DE JUGADORES (Alineación Pro) --- */
+.label { 
+    font-size: 10px; 
+    letter-spacing: 4px; 
+    text-transform: uppercase; 
+    color: #555; 
+    margin-bottom: 12px; 
+}
+
+.instruccion {
+    font-size: 15px;
+    color: var(--texto-secundario);
+    line-height: 1.8;
+    margin-bottom: 2rem;
+}
+
+/* --- LISTA DE JUGADORES --- */
+.player-list {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+}
+
 .player-row {
     background: rgba(255,255,255,0.03);
     border: 1px solid var(--gris-borde);
@@ -107,9 +128,16 @@ body {
     border-radius: 4px; 
     outline: none; 
     width: 100%;
+    font-family: 'DM Sans', sans-serif;
 }
 
 .vm-input:focus { border-color: var(--rojo-sangre); box-shadow: 0 0 5px rgba(139, 0, 0, 0.2); }
+.vm-input::placeholder { color: #333; }
+.vm-select option { background: #080808; }
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+input[type=number] { -moz-appearance: textfield; }
 
 .btn-remove { 
     background: none; 
@@ -119,7 +147,7 @@ body {
     cursor: pointer;
 }
 
-/* --- 5. EL SWITCH (Roles Falsos) --- */
+/* --- TOGGLE ROLES FALSOS --- */
 .toggle-row {
     display: flex; 
     justify-content: space-between; 
@@ -127,6 +155,7 @@ body {
     padding: 20px 0; 
     border-top: 1px solid var(--gris-borde); 
     margin-top: 15px;
+    margin-bottom: 1.5rem;
 }
 
 .toggle-label { 
@@ -152,7 +181,7 @@ body {
 input:checked + .slider { background: var(--rojo-sangre); }
 input:checked + .slider:before { transform: translateX(22px); }
 
-/* --- 6. BOTONES DE ACCIÓN --- */
+/* --- BOTONES PRINCIPALES --- */
 .btn-primary, .btn-instrucciones {
     width: 100%; 
     background: var(--rojo-sangre); 
@@ -172,7 +201,7 @@ input:checked + .slider:before { transform: translateX(22px); }
 }
 
 .btn-primary:active { background: var(--rojo-hover); transform: scale(0.98); }
-.btn-primary:disabled { background: #222; color: #444; cursor: not-allowed; }
+.btn-primary:disabled { background: #222; color: #444; cursor: not-allowed; opacity: 0.4; transform: none; }
 
 .btn-agregar {
     width: 100%; 
@@ -185,9 +214,10 @@ input:checked + .slider:before { transform: translateX(22px); }
     letter-spacing: 2px; 
     margin-bottom: 2rem; 
     border-radius: 4px;
+    cursor: pointer;
 }
 
-/* --- 7. ELEMENTOS DE JUEGO --- */
+/* --- COUNTER --- */
 .counter { 
     color: var(--rojo-sangre); 
     font-family: 'Bebas Neue', sans-serif; 
@@ -197,27 +227,162 @@ input:checked + .slider:before { transform: translateX(22px); }
     letter-spacing: 2px;
 }
 
-.label { font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: #555; margin-bottom: 12px; }
+.warning {
+    font-size: 11px;
+    color: var(--rojo-sangre);
+    text-align: center;
+    margin-top: 10px;
+    min-height: 16px;
+    letter-spacing: 1px;
+}
+
+/* --- PANTALLAS DE JUEGO --- */
+.nombre-jugador {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    letter-spacing: 4px;
+    color: var(--texto-principal);
+    margin-bottom: 0.5rem;
+}
 
 .rol-nombre {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 48px;
     color: var(--rojo-sangre);
     letter-spacing: 3px;
+    margin-bottom: 0.5rem;
 }
 
-/* --- 8. FOOTER --- */
-.footer-brand { 
-    margin-top: auto; 
-    padding-top: 3rem; 
-    font-size: 11px; 
-    letter-spacing: 5px; 
-    color: #2a2a2a; 
-    text-align: center; 
-    text-transform: uppercase;
+.rol-desc {
+    font-size: 15px;
+    color: var(--texto-secundario);
+    line-height: 1.8;
+    white-space: pre-line;
 }
 
-/* --- FIX MODOS DE JUEGO (RECUADROS) --- */
+.villain-extra {
+    border-left: 2px solid var(--rojo-sangre);
+    padding-left: 1rem;
+    margin-top: 1.5rem;
+}
+
+.complice-nombre {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 3px;
+    color: var(--texto-principal);
+    margin-top: 4px;
+}
+
+/* --- ROL FALSO HINT --- */
+.rol-falso-hint {
+    margin-top: 1rem;
+    padding: 12px 16px;
+    border-left: 2px solid var(--rojo-sangre);
+    font-size: 13px;
+    color: var(--texto-secundario);
+    letter-spacing: 0.5px;
+    line-height: 1.6;
+}
+
+/* --- PICKER (botones de selección de jugador) --- */
+.picker-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 1.5rem 0;
+}
+
+.picker-btn {
+    width: 100%;
+    background: var(--gris-oscuro);
+    border: 1px solid var(--gris-borde);
+    color: var(--texto-principal);
+    padding: 18px;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+}
+
+.picker-btn:active, .picker-btn.selected { 
+    border-color: var(--rojo-sangre); 
+    background: #1f0000; 
+    color: #fff; 
+}
+
+/* --- TIMER --- */
+.timer-wrap {
+    margin: 2rem 0 1.5rem;
+}
+
+.timer-bar-bg {
+    width: 100%;
+    height: 4px;
+    background: #2a2a2a;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.timer-bar {
+    height: 100%;
+    background: var(--rojo-sangre);
+    width: 100%;
+    transition: width 1s linear;
+    border-radius: 2px;
+}
+
+.timer-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--rojo-sangre);
+    letter-spacing: 4px;
+}
+
+/* --- ALIVE LIST (debate) --- */
+.alive-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 1rem 0 2rem;
+}
+
+.alive-chip {
+    background: var(--gris-oscuro);
+    border: 1px solid var(--gris-borde);
+    color: var(--texto-secundario);
+    padding: 6px 14px;
+    font-size: 13px;
+    letter-spacing: 1px;
+    border-radius: 20px;
+}
+
+/* --- GAMEOVER --- */
+.gameover-roles {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 1.5rem;
+}
+
+.gameover-role-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid #1e1e1e;
+    color: var(--texto-secundario);
+}
+
+.gameover-role-row span:first-child { color: var(--texto-principal); }
+.gameover-role-row span:last-child { color: var(--texto-secundario); }
+.villain-tag { color: var(--rojo-sangre) !important; }
+
+/* --- MODOS DE JUEGO --- */
 .mode-grid {
     display: flex;
     flex-direction: column;
@@ -226,7 +391,7 @@ input:checked + .slider:before { transform: translateX(22px); }
 }
 
 .mode-btn {
-    background: #1a1a1a;
+    background: var(--gris-oscuro);
     border: 1px solid var(--gris-borde);
     padding: 20px;
     border-radius: 6px;
@@ -238,10 +403,7 @@ input:checked + .slider:before { transform: translateX(22px); }
     transition: all 0.2s ease;
 }
 
-.mode-btn:active {
-    border-color: var(--rojo-sangre);
-    background: #222;
-}
+.mode-btn:active { border-color: var(--rojo-sangre); background: #1f0000; }
 
 .mode-name {
     font-family: 'Bebas Neue', sans-serif;
@@ -260,97 +422,38 @@ input:checked + .slider:before { transform: translateX(22px); }
     display: block;
 }
 
-/* En tablets o desktop se ponen uno al lado del otro */
-@media (min-width: 600px) {
-    .mode-grid {
-        flex-direction: row;
-    }
-    .mode-btn {
-        flex: 1;
-    }
+/* --- INSTRUCCIONES --- */
+.instr-text {
+    font-size: 14px;
+    color: var(--texto-secundario);
+    line-height: 1.8;
+    margin-bottom: 1rem;
 }
 
-/* --- BOTONES DE JUGADORES DENTRO DEL JUEGO --- */
-#lista-victimas, #lista-proteccion, #lista-votacion, .lista-nombres {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin: 20px 0;
+.instr-rol {
+    font-size: 15px;
+    color: var(--texto-principal);
+    font-weight: 500;
+    margin-bottom: 4px;
+    margin-top: 1rem;
 }
 
-/* Esta es la regla clave para que los nombres NO sean horribles */
-#lista-victimas button, #lista-proteccion button, #lista-votacion button, .btn-voto {
-    background: #1a1a1a;
-    border: 1px solid var(--gris-borde);
-    color: white;
-    padding: 18px;
-    border-radius: 6px;
-    font-family: 'DM Sans', sans-serif;
+.instr-paso {
+    font-family: 'Bebas Neue', sans-serif;
     font-size: 16px;
-    cursor: pointer;
-    width: 100%;
-    text-align: center;
-    transition: 0.2s;
+    letter-spacing: 3px;
+    color: var(--rojo-sangre);
+    margin-bottom: 4px;
+    margin-top: 1rem;
 }
 
-#lista-victimas button:active, .btn-voto:active {
-    border-color: var(--rojo-sangre);
-    background: #252525;
-}
-
-/* --- BARRA DE TIEMPO --- */
-.timer-bar-container {
-    width: 100%;
-    height: 4px;
-    background: #2a2a2a;
-    margin: 20px 0;
-    border-radius: 2px;
-    overflow: hidden;
-}
-
-.timer-bar-fill {
-    height: 100%;
-    background: var(--rojo-sangre);
-    width: 100%;
-    transition: width 1s linear; /* Para que baje fluido */
-}
-
-/* Botón continuar cuando está bloqueado */
-.btn-disabled {
-    opacity: 0.3;
-    pointer-events: none;
-    filter: grayscale(1);
-}
-
-#lista-roles-final {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 20px;
-    font-size: 18px;
-}
-
-/* --- BARRA DE TIEMPO ESTILO LUZZZEN --- */
-.timer-container {
-    width: 100%;
-    height: 6px;
-    background: #2a2a2a;
-    border-radius: 10px;
-    margin: 20px 0;
-    overflow: hidden;
-}
-
-.timer-fill {
-    height: 100%;
-    background: var(--rojo-sangre);
-    width: 100%; /* Empieza llena */
-    transition: width 1s linear;
-}
-
-/* Estado bloqueado para el botón */
-.btn-primary:disabled {
-    opacity: 0.3;
-    filter: grayscale(1);
-    cursor: not-allowed;
-    transform: none !important;
+/* --- FOOTER --- */
+.footer-brand { 
+    margin-top: auto; 
+    padding-top: 3rem; 
+    font-size: 11px; 
+    letter-spacing: 5px; 
+    color: #2a2a2a; 
+    text-align: center; 
+    text-transform: uppercase;
 }
