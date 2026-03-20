@@ -367,7 +367,6 @@ function revealNightAction() {
   title = 'EL TESTIGO';
   const pista = generarPista();
   desc = pista + '\n\n⚠️ Recordá esta pista.\nDebés decirla durante el día tal como es.\nNo podés mentir, cambiarla ni ocultarla.';
-}
   } else if (role === 'sacrificio') {
     title = 'ELEGÍ A QUIÉN PROTEGER';
     desc = 'Si el Asesino elige a esa persona esta noche, morís vos en su lugar.';
